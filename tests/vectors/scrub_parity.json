@@ -1,0 +1,2055 @@
+{
+ "cli_version": "0.10.54",
+ "join": "\u2063",
+ "modes": [
+  "full",
+  "secrets-only"
+ ],
+ "cases": [
+  {
+   "name": "github token",
+   "input": "pushed with ghp_Kj\u2063QxSRfB\u2063Ys8sD6\u2063sMqaZJ\u2063qEhVKg\u2063n99vf4\u2063R9yN today",
+   "full": {
+    "output": "pushed with [REDACTED] today",
+    "counts": {
+     "github_token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "github_token",
+      "chars": 40
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "pushed with [REDACTED] today",
+    "counts": {
+     "github_token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "github_token",
+      "chars": 40
+     }
+    ]
+   }
+  },
+  {
+   "name": "anthropic key",
+   "input": "ANTHRO\u2063PIC_AP\u2063I_KEY=\u2063sk-ant\u2063-api03\u2063-rWVuw\u2063czPiLH\u2063rxjvbn\u2063kWwW2f\u2063jAJXHn\u2063t6gXbt\u2063XdQVy",
+   "full": {
+    "output": "ANTHRO\u2063PIC_AP\u2063I_KEY=[REDACTED]",
+    "counts": {
+     "anthropic_key": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 19,
+      "rule": "anthropic_key",
+      "chars": 53
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "ANTHRO\u2063PIC_AP\u2063I_KEY=[REDACTED]",
+    "counts": {
+     "anthropic_key": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 19,
+      "rule": "anthropic_key",
+      "chars": 53
+     }
+    ]
+   }
+  },
+  {
+   "name": "openai key",
+   "input": "export OPENAI\u2063_API_K\u2063EY=sk-\u2063proj-Z\u2063wYcHQX\u2063eXaKEg\u20636mWQrT\u2063DkCz6j\u2063zeCEDj\u2063HEbwLw\u2063qgTN4z\u20639pcbT",
+   "full": {
+    "output": "export OPENAI\u2063_API_K\u2063EY=[REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "token",
+      "chars": 56
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "export OPENAI\u2063_API_K\u2063EY=[REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "token",
+      "chars": 56
+     }
+    ]
+   }
+  },
+  {
+   "name": "aws key pair",
+   "input": "aws_ac\u2063cess_k\u2063ey_id = AKIA5Y\u2063AUCNPT\u2063TZC6ZW\u2063BH\naws_se\u2063cret_a\u2063ccess_\u2063key = MWdcwc\u20636iu2qU\u2063bSX6aR\u2063y4Az2i\u2063Gqk5ct\u2063UkwTDU\u2063E2rz",
+   "full": {
+    "output": "aws_ac\u2063cess_k\u2063ey_id = [REDACTED]\naws_se\u2063cret_a\u2063ccess_\u2063key = [REDACTED]",
+    "counts": {
+     "assignment": 1,
+     "aws_akid": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 21,
+      "rule": "aws_akid",
+      "chars": 20
+     },
+     {
+      "line": 2,
+      "col": 25,
+      "rule": "assignment",
+      "chars": 40
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "aws_ac\u2063cess_k\u2063ey_id = [REDACTED]\naws_se\u2063cret_a\u2063ccess_\u2063key = [REDACTED]",
+    "counts": {
+     "assignment": 1,
+     "aws_akid": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 21,
+      "rule": "aws_akid",
+      "chars": 20
+     },
+     {
+      "line": 2,
+      "col": 25,
+      "rule": "assignment",
+      "chars": 40
+     }
+    ]
+   }
+  },
+  {
+   "name": "slack token",
+   "input": "slack xoxb-3\u2063181245\u206367435-\u2063010538\u2063489305\u20636-bUJA\u2063FrJkgQ\u2063rfVCYS\u2063NPjo4W\u2063zJ posted",
+   "full": {
+    "output": "slack [REDACTED] posted",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 7,
+      "rule": "token",
+      "chars": 56
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "slack [REDACTED] posted",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 7,
+      "rule": "token",
+      "chars": 56
+     }
+    ]
+   }
+  },
+  {
+   "name": "stripe key",
+   "input": "stripe\u2063.api_k\u2063ey = 'sk_liv\u2063e_hhjm\u2063c8RqWE\u2063ccza7R\u2063btcsmW\u2063vKFdNr\u2063R8hH9K\u2063j3Yi7K'",
+   "full": {
+    "output": "stripe\u2063.api_k\u2063ey = '[REDACTED]'",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 19,
+      "rule": "token",
+      "chars": 48
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "stripe\u2063.api_k\u2063ey = '[REDACTED]'",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 19,
+      "rule": "token",
+      "chars": 48
+     }
+    ]
+   }
+  },
+  {
+   "name": "xai key",
+   "input": "XAI_AP\u2063I_KEY=\u2063xai-8s\u2063AE4kkr\u2063wQXTCT\u2063faqcG2\u2063rBADLa\u2063HSttAM\u2063dX7QX6\u2063aQUE7H\u2063onPhcN\u2063Y5spxC\u2063D5MptC\u2063WmsvBS\u2063VfjpDc\u20634LM9a4",
+   "full": {
+    "output": "XAI_AP\u2063I_KEY=[REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "token",
+      "chars": 84
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "XAI_AP\u2063I_KEY=[REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "token",
+      "chars": 84
+     }
+    ]
+   }
+  },
+  {
+   "name": "groq key",
+   "input": "curl -H 'Author\u2063izatio\u2063n: Bearer gsk_x2\u2063ixBJQa\u2063JqV7V7\u20632LYmyE\u20636GASvA\u2063PVxD5p\u2063YQnQHh\u2063yCyNkn\u2063WNVa6e\u2063tq' https://api.\u2063exampl\u2063e.com/\u2063v1",
+   "full": {
+    "output": "curl -H 'Author\u2063izatio\u2063n: Bearer [REDACTED]' https://api.\u2063exampl\u2063e.com/\u2063v1",
+    "counts": {
+     "bearer": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 32,
+      "rule": "bearer",
+      "chars": 56
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "curl -H 'Author\u2063izatio\u2063n: Bearer [REDACTED]' https://api.\u2063exampl\u2063e.com/\u2063v1",
+    "counts": {
+     "bearer": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 32,
+      "rule": "bearer",
+      "chars": 56
+     }
+    ]
+   }
+  },
+  {
+   "name": "google api key",
+   "input": "key=AI\u2063zakWai\u2063nTmvMS\u2063tijUAW\u2063fQQBvB\u2063tQcX4e\u20636bp9YZ\u2063g&q=x",
+   "full": {
+    "output": "key=[REDACTED]&q=x",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 5,
+      "rule": "token",
+      "chars": 39
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "key=[REDACTED]&q=x",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 5,
+      "rule": "token",
+      "chars": 39
+     }
+    ]
+   }
+  },
+  {
+   "name": "google oauth access token",
+   "input": "token ya29.u\u20638EM4qt\u2063yrR4Fi\u2063h4ZbvN\u2063fJ8UbN\u2063rVzVVw\u2063Sz4ZsH\u2063MckK6z\u2063V9FCxk\u2063cXq3i7\u2063JQJXd",
+   "full": {
+    "output": "token [REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 7,
+      "rule": "token",
+      "chars": 65
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "token [REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 7,
+      "rule": "token",
+      "chars": 65
+     }
+    ]
+   }
+  },
+  {
+   "name": "google oauth refresh token",
+   "input": "refres\u2063h_toke\u2063n: 1//s84\u20637eCNLM\u2063qdirab\u2063V4MANP\u2063Esjp2M\u2063JnLY9v\u2063UCY6qC\u20638HJpnb\u2063G5f3B6\u2063tjT28T\u2063LzHpTP\u2063KFhEdP\u2063D",
+   "full": {
+    "output": "refres\u2063h_toke\u2063n: [REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 16,
+      "rule": "token",
+      "chars": 73
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "refres\u2063h_toke\u2063n: [REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 16,
+      "rule": "token",
+      "chars": 73
+     }
+    ]
+   }
+  },
+  {
+   "name": "z.ai key",
+   "input": "ZAI_AP\u2063I_KEY=\u206388d364\u2063ab198e\u2063626cdf\u2063c5567c\u206374520e\u206302.Bh2\u20633ZW4Wu\u2063VK872C\u20633",
+   "full": {
+    "output": "ZAI_AP\u2063I_KEY=[REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "token",
+      "chars": 49
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "ZAI_AP\u2063I_KEY=[REDACTED]",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "token",
+      "chars": 49
+     }
+    ]
+   }
+  },
+  {
+   "name": "a4sx session token",
+   "input": "A4SX_S\u2063ESSION\u2063=ge_se\u2063ss_UYt\u2063jGMQ7d\u20639VKSdQ\u2063PSBk6r\u2063ACh",
+   "full": {
+    "output": "A4SX_S\u2063ESSION\u2063=[REDACTED]",
+    "counts": {
+     "session_token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 14,
+      "rule": "session_token",
+      "chars": 32
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "A4SX_S\u2063ESSION\u2063=[REDACTED]",
+    "counts": {
+     "session_token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 14,
+      "rule": "session_token",
+      "chars": 32
+     }
+    ]
+   }
+  },
+  {
+   "name": "a4sx tokens",
+   "input": "read with ge_tok\u2063_XmM3q\u2063kNURf9\u2063bHnwHV\u2063tsv2Tg\u2063PDGfBR\u2063F7MLdX\u2063m and pt_LW5\u2063wEzViM\u2063U7ZcLT\u2063XhNuUW\u2063wFUjw6\u2063VCNeW",
+   "full": {
+    "output": "read with [REDACTED] and [REDACTED]",
+    "counts": {
+     "polaris_tok": 1,
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 11,
+      "rule": "token",
+      "chars": 43
+     },
+     {
+      "line": 1,
+      "col": 26,
+      "rule": "polaris_tok",
+      "chars": 35
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "read with [REDACTED] and [REDACTED]",
+    "counts": {
+     "polaris_tok": 1,
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 11,
+      "rule": "token",
+      "chars": 43
+     },
+     {
+      "line": 1,
+      "col": 26,
+      "rule": "polaris_tok",
+      "chars": 35
+     }
+    ]
+   }
+  },
+  {
+   "name": "bearer",
+   "input": "Author\u2063izatio\u2063n: Bearer Lcga5d\u2063yAFWyG\u20639b9CVX\u2063Cx6Eik\u2063RYSpYn\u2063sp",
+   "full": {
+    "output": "Author\u2063izatio\u2063n: Bearer [REDACTED]",
+    "counts": {
+     "bearer": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "bearer",
+      "chars": 32
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "Author\u2063izatio\u2063n: Bearer [REDACTED]",
+    "counts": {
+     "bearer": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "bearer",
+      "chars": 32
+     }
+    ]
+   }
+  },
+  {
+   "name": "basic auth",
+   "input": "Author\u2063izatio\u2063n: Basic dXNlcj\u2063pIdW50\u2063ZXIyLU\u2063V4YW1w\u2063bGU=",
+   "full": {
+    "output": "Author\u2063izatio\u2063n: Basic [REDACTED]",
+    "counts": {
+     "auth_header": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 22,
+      "rule": "auth_header",
+      "chars": 28
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "Author\u2063izatio\u2063n: Basic [REDACTED]",
+    "counts": {
+     "auth_header": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 22,
+      "rule": "auth_header",
+      "chars": 28
+     }
+    ]
+   }
+  },
+  {
+   "name": "digest auth",
+   "input": "Author\u2063izatio\u2063n: Digest username=\"ann\", realm=\"r\", nonce=\"f3b200\u2063de1dfc\u20638a9c28\u206327adf0\u2063d41f61\u20638c\", uri=\"/x\", response=\"d13c68\u2063c20b97\u20637fed83\u206397be57\u20639a4447\u20630c\", opaque=\"253eb0\u206308ef09\u2063b01bf3\u206360c688\u206354eb92\u20632b\"",
+   "full": {
+    "output": "Author\u2063izatio\u2063n: Digest username=\"ann\", realm=\"r\", nonce=\"f3b200\u2063de1dfc\u20638a9c28\u206327adf0\u2063d41f61\u20638c\", uri=\"/x\", response=\"[REDACTED]\", opaque=\"253eb0\u206308ef09\u2063b01bf3\u206360c688\u206354eb92\u20632b\"",
+    "counts": {
+     "digest": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 112,
+      "rule": "digest",
+      "chars": 32
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "Author\u2063izatio\u2063n: Digest username=\"ann\", realm=\"r\", nonce=\"f3b200\u2063de1dfc\u20638a9c28\u206327adf0\u2063d41f61\u20638c\", uri=\"/x\", response=\"[REDACTED]\", opaque=\"253eb0\u206308ef09\u2063b01bf3\u206360c688\u206354eb92\u20632b\"",
+    "counts": {
+     "digest": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 112,
+      "rule": "digest",
+      "chars": 32
+     }
+    ]
+   }
+  },
+  {
+   "name": "aws signature",
+   "input": "https://buck\u2063et.s3.\u2063exampl\u2063e.com/\u2063k?X-Amz-\u2063Creden\u2063tial=x&X-Amz-\u2063Signat\u2063ure=3f\u2063e530eb\u20632a60f8\u2063363e6e\u2063bad7b6\u2063e80d87\u2063431012\u2063d69df3\u2063d5872a\u206302d063\u2063116240\u206371",
+   "full": {
+    "output": "https://buck\u2063et.s3.\u2063exampl\u2063e.com/\u2063k?X-Amz-\u2063Creden\u2063tial=x&X-Amz-\u2063Signat\u2063ure=[REDACTED]",
+    "counts": {
+     "aws_signature": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 68,
+      "rule": "aws_signature",
+      "chars": 64
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "https://buck\u2063et.s3.\u2063exampl\u2063e.com/\u2063k?X-Amz-\u2063Creden\u2063tial=x&X-Amz-\u2063Signat\u2063ure=[REDACTED]",
+    "counts": {
+     "aws_signature": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 68,
+      "rule": "aws_signature",
+      "chars": 64
+     }
+    ]
+   }
+  },
+  {
+   "name": "url credentials",
+   "input": "git clone https://ann:ivitLg\u2063uNHPSa\u206325dv@git.ex\u2063ample.\u2063com/r.\u2063git",
+   "full": {
+    "output": "git clone https://ann:[REDACTED]@git.ex\u2063ample.\u2063com/r.\u2063git",
+    "counts": {
+     "url_cred": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "url_cred",
+      "chars": 16
+     },
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "url_cred",
+      "chars": 10
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "git clone https://ann:[REDACTED]@git.ex\u2063ample.\u2063com/r.\u2063git",
+    "counts": {
+     "url_cred": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "url_cred",
+      "chars": 16
+     },
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "url_cred",
+      "chars": 10
+     }
+    ]
+   }
+  },
+  {
+   "name": "url token",
+   "input": "git remote add o https://RtfZ\u2063EWXbHo\u2063DWogHy\u20639Dkm7@github\u2063.com/a\u2063cme/ap\u2063p.git",
+   "full": {
+    "output": "git remote add o https://[REDACTED]@github\u2063.com/a\u2063cme/ap\u2063p.git",
+    "counts": {
+     "url_token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 26,
+      "rule": "url_token",
+      "chars": 21
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "git remote add o https://[REDACTED]@github\u2063.com/a\u2063cme/ap\u2063p.git",
+    "counts": {
+     "url_token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 26,
+      "rule": "url_token",
+      "chars": 21
+     }
+    ]
+   }
+  },
+  {
+   "name": "mysql password",
+   "input": "mysql -u root -pivit\u2063LguNHP\u2063Sa25dv -h db",
+   "full": {
+    "output": "mysql -u root -p[REDACTED] -h db",
+    "counts": {
+     "mysql_password": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 17,
+      "rule": "mysql_password",
+      "chars": 16
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "mysql -u root -p[REDACTED] -h db",
+    "counts": {
+     "mysql_password": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 17,
+      "rule": "mysql_password",
+      "chars": 16
+     }
+    ]
+   }
+  },
+  {
+   "name": "curl userpass",
+   "input": "curl -u ann:ivitLg\u2063uNHPSa\u206325dv https://api.\u2063exampl\u2063e.com",
+   "full": {
+    "output": "curl -u ann:[REDACTED] https://api.\u2063exampl\u2063e.com",
+    "counts": {
+     "cmd_userpass": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "cmd_userpass",
+      "chars": 16
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "curl -u ann:[REDACTED] https://api.\u2063exampl\u2063e.com",
+    "counts": {
+     "cmd_userpass": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "cmd_userpass",
+      "chars": 16
+     }
+    ]
+   }
+  },
+  {
+   "name": "command-line password",
+   "input": "pg_dump --password ivitLg\u2063uNHPSa\u206325dv app",
+   "full": {
+    "output": "pg_dump --password [REDACTED] app",
+    "counts": {
+     "cmd_password": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 20,
+      "rule": "cmd_password",
+      "chars": 16
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "pg_dump --password [REDACTED] app",
+    "counts": {
+     "cmd_password": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 20,
+      "rule": "cmd_password",
+      "chars": 16
+     }
+    ]
+   }
+  },
+  {
+   "name": "sshpass",
+   "input": "sshpass -p 'ivitLg\u2063uNHPSa\u206325dv' ssh ann@host",
+   "full": {
+    "output": "sshpass -p 'ivitLg\u2063uNHPSa\u206325dv' ssh ann@host",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "sshpass -p 'ivitLg\u2063uNHPSa\u206325dv' ssh ann@host",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "inline userpass",
+   "input": "connect ann/iv\u2063itLguN\u2063HPSa25\u2063dv@orcl",
+   "full": {
+    "output": "connect ann/iv\u2063itLguN\u2063HPSa25\u2063dv@orcl",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "connect ann/iv\u2063itLguN\u2063HPSa25\u2063dv@orcl",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "password assignment",
+   "input": "password = \"ivitLg\u2063uNHPSa\u206325dv\"",
+   "full": {
+    "output": "password = \"[REDACTED]\"",
+    "counts": {
+     "assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "assignment",
+      "chars": 16
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "password = \"[REDACTED]\"",
+    "counts": {
+     "assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "assignment",
+      "chars": 16
+     }
+    ]
+   }
+  },
+  {
+   "name": "weak password value",
+   "input": "passwo\u2063rd=hun\u2063ter2 and password: hunter2!",
+   "full": {
+    "output": "password=[REDACTED] and password: [REDACTED]",
+    "counts": {
+     "weakpass": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 10,
+      "rule": "weakpass",
+      "chars": 7
+     },
+     {
+      "line": 1,
+      "col": 32,
+      "rule": "weakpass",
+      "chars": 8
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "password=[REDACTED] and password: [REDACTED]",
+    "counts": {
+     "weakpass": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 10,
+      "rule": "weakpass",
+      "chars": 7
+     },
+     {
+      "line": 1,
+      "col": 32,
+      "rule": "weakpass",
+      "chars": 8
+     }
+    ]
+   }
+  },
+  {
+   "name": "quoted assignment",
+   "input": "api_secret: \"ivitLg\u2063uNHPSa\u206325dvx9\"",
+   "full": {
+    "output": "api_secret: \"[REDACTED]\"",
+    "counts": {
+     "assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 14,
+      "rule": "assignment",
+      "chars": 18
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "api_secret: \"[REDACTED]\"",
+    "counts": {
+     "assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 14,
+      "rule": "assignment",
+      "chars": 18
+     }
+    ]
+   }
+  },
+  {
+   "name": "json assignment",
+   "input": "{\"client\u2063_secre\u2063t\": \"mRPJRz\u2063TcKRPv\u2063QVdWHe\u2063MitjS4\"}",
+   "full": {
+    "output": "{\"client\u2063_secre\u2063t\": \"[REDACTED]\"}",
+    "counts": {
+     "json_assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 20,
+      "rule": "json_assignment",
+      "chars": 24
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "{\"client\u2063_secre\u2063t\": \"[REDACTED]\"}",
+    "counts": {
+     "json_assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 20,
+      "rule": "json_assignment",
+      "chars": 24
+     }
+    ]
+   }
+  },
+  {
+   "name": "nested json assignment",
+   "input": "{\"text\": \"{\\\"api_key\\\": \\\"mRPJRz\u2063TcKRPv\u2063QVdWHe\u2063MitjS4\\\"}\"}",
+   "full": {
+    "output": "{\"text\": \"{\\\"api_key\\\": \\\"[REDACTED]\\\"}\"}",
+    "counts": {
+     "json_assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 27,
+      "rule": "json_assignment",
+      "chars": 24
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "{\"text\": \"{\\\"api_key\\\": \\\"[REDACTED]\\\"}\"}",
+    "counts": {
+     "json_assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 27,
+      "rule": "json_assignment",
+      "chars": 24
+     }
+    ]
+   }
+  },
+  {
+   "name": "env assignment",
+   "input": "DB_PAS\u2063SWORD=\u2063mRPJRz\u2063TcKRPv\u2063QVdWHe\u2063MitjS4",
+   "full": {
+    "output": "DB_PAS\u2063SWORD=[REDACTED]",
+    "counts": {
+     "assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "assignment",
+      "chars": 24
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "DB_PAS\u2063SWORD=[REDACTED]",
+    "counts": {
+     "assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "assignment",
+      "chars": 24
+     }
+    ]
+   }
+  },
+  {
+   "name": "weak password",
+   "input": "the password is hunter2 for now",
+   "full": {
+    "output": "the password is hunter2 for now",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "the password is hunter2 for now",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "inline user%pass",
+   "input": "smbclient //srv/share -U 'ann%ivitLg\u2063uNHPSa\u206325dv'",
+   "full": {
+    "output": "smbclient //srv/share -U 'ann%[REDACTED]'",
+    "counts": {
+     "inline_userpass": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 31,
+      "rule": "inline_userpass",
+      "chars": 16
+     },
+     {
+      "line": 1,
+      "col": 31,
+      "rule": "inline_userpass",
+      "chars": 10
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "smbclient //srv/share -U 'ann%[REDACTED]'",
+    "counts": {
+     "inline_userpass": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 31,
+      "rule": "inline_userpass",
+      "chars": 16
+     },
+     {
+      "line": 1,
+      "col": 31,
+      "rule": "inline_userpass",
+      "chars": 10
+     }
+    ]
+   }
+  },
+  {
+   "name": "pass assignment",
+   "input": "db_pas\u2063s=ivit\u2063LguNHP\u2063Sa25dv and DB_PASS: ivitLg\u2063uNHPSa\u206325dv",
+   "full": {
+    "output": "db_pass=[REDACTED] and DB_PASS: [REDACTED]",
+    "counts": {
+     "pass_assignment": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 9,
+      "rule": "pass_assignment",
+      "chars": 16
+     },
+     {
+      "line": 1,
+      "col": 39,
+      "rule": "pass_assignment",
+      "chars": 16
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "db_pass=[REDACTED] and DB_PASS: [REDACTED]",
+    "counts": {
+     "pass_assignment": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 9,
+      "rule": "pass_assignment",
+      "chars": 16
+     },
+     {
+      "line": 1,
+      "col": 39,
+      "rule": "pass_assignment",
+      "chars": 16
+     }
+    ]
+   }
+  },
+  {
+   "name": "quoted assignment with a space",
+   "input": "token: 'mRP JRzTcK\u2063RPvQVd\u2063WHeMit\u2063jS4'",
+   "full": {
+    "output": "token: '[REDACTED]'",
+    "counts": {
+     "quoted_assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 9,
+      "rule": "quoted_assignment",
+      "chars": 25
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "token: '[REDACTED]'",
+    "counts": {
+     "quoted_assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 9,
+      "rule": "quoted_assignment",
+      "chars": 25
+     }
+    ]
+   }
+  },
+  {
+   "name": "escaped-quote assignment",
+   "input": "config: PASSWORD = \\\"mRPJRz\u2063TcKRPv\u2063QVdWHe\u2063MitjS4\\\"",
+   "full": {
+    "output": "config: PASSWORD = \\\"[REDACTED]\\\"",
+    "counts": {
+     "nested_assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 22,
+      "rule": "nested_assignment",
+      "chars": 24
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "config: PASSWORD = \\\"[REDACTED]\\\"",
+    "counts": {
+     "nested_assignment": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 22,
+      "rule": "nested_assignment",
+      "chars": 24
+     }
+    ]
+   }
+  },
+  {
+   "name": "keys back to back",
+   "input": "ghp_Kj\u2063QxSRfB\u2063Ys8sD6\u2063sMqaZJ\u2063qEhVKg\u2063n99vf4\u2063R9yNsk\u2063-proj-\u2063ZwYcHQ\u2063XeXaKE\u2063g6mWQr\u2063TDkCz6\u2063jzeCED\u2063jHEbwL\u2063wqgTN4\u2063z9pcbT and AKIA5Y\u2063AUCNPT\u2063TZC6ZW\u2063BHmRPJ\u2063RzTcKR\u2063PvQVdW\u2063HeMitj\u2063S4",
+   "full": {
+    "output": "[REDACTED] and [REDACTED]",
+    "counts": {
+     "aws_akid": 1,
+     "github_token": 1,
+     "token_tail": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 1,
+      "rule": "github_token",
+      "chars": 42
+     },
+     {
+      "line": 1,
+      "col": 1,
+      "rule": "token_tail",
+      "chars": 64
+     },
+     {
+      "line": 1,
+      "col": 70,
+      "rule": "aws_akid",
+      "chars": 20
+     },
+     {
+      "line": 1,
+      "col": 70,
+      "rule": "token_tail",
+      "chars": 34
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "[REDACTED] and [REDACTED]",
+    "counts": {
+     "aws_akid": 1,
+     "github_token": 1,
+     "token_tail": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 1,
+      "rule": "github_token",
+      "chars": 42
+     },
+     {
+      "line": 1,
+      "col": 1,
+      "rule": "token_tail",
+      "chars": 64
+     },
+     {
+      "line": 1,
+      "col": 70,
+      "rule": "aws_akid",
+      "chars": 20
+     },
+     {
+      "line": 1,
+      "col": 70,
+      "rule": "token_tail",
+      "chars": 34
+     }
+    ]
+   }
+  },
+  {
+   "name": "jwt",
+   "input": "cookie: eyJhbG\u2063ciOiJI\u2063UzI1Ni\u2063IsInR5\u2063cCI6Ik\u2063pXVCJ9\u2063.eyJzd\u2063WIiOiI\u2063xMjM0N\u2063TY3ODk\u2063wIiwib\u2063mFtZSI\u20636IkV4Y\u2063W1wbGU\u2063ifQ.Kx\u2063CXWamK\u2063sDZpjh\u20636rJt8N\u20635G6q6n\u2063P8xMhf\u2063ZyJZDR\u2063zB33b",
+   "full": {
+    "output": "cookie: [REDACTED]",
+    "counts": {
+     "jwt": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 9,
+      "rule": "jwt",
+      "chars": 131
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "cookie: [REDACTED]",
+    "counts": {
+     "jwt": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 9,
+      "rule": "jwt",
+      "chars": 131
+     }
+    ]
+   }
+  },
+  {
+   "name": "private key",
+   "input": "-----BEGIN RSA PRIV\u2063ATE KEY-----\nMIIEow\u2063HeorKv\u2063fRW9pj\u206332nMWf\u20639ttgFK\u2063JrnnY9\u2063BPWHUg\u2063ubgbCC\u2063VYZ6aF\u2063SDWcwo\u2063JfHCMD\u2063qVvzEF\u2063RKw6EM\u2063Yrav83\u2063UdMhnv\u2063gq7k2v\u2063NZ4ioe\u2063DcHA83\u2063E6qf4J\u2063sA623j\u2063sV4LQp\u2063Zt3Qb7\u20634THK6Z\u2063fa5VEo\u2063wWWFca\u20639aLoag\u2063BEraoV\u2063rFybDZ\u2063tWMPsN\u2063yLVAko\u2063tRdKYF\u2063SGMJsD\u2063aBgCYF\u2063BnSuFo\u2063QZ44EM\u20636ZjGKs\u20636qRXD2\u2063BYGeDt\u2063bgoWrW\u2063dUnFgy\u2063o2VLLE\u2063yNSY7K\u2063fbnKwo\u2063p74cq8\u2063FKToKR\u20632npZGL\u2063sawNjo\u2063Xas6AD\u2063ULB5Ts\u2063LUrsTT\u2063uKMnH3\u2063MDkcAR\u2063vkSUeG\u2063abYN9C\u2063pJrCPa\u2063xJXxKy\u2063EniUXq\u2063A8GRpS\u2063QkPsxf\u20639Z3MKY\u2063Fw9Kc6\u2063LuBtVa\u2063bFnfyy\u2063JN4d5f\u2063cpUtQB\u2063Qhvbfi\u2063mmuKLF\u2063kLUHvq\u2063zDRfDP\u2063En5E9C\u20633VLtzz\u2063AMMu4B\u2063S4Aag9\u2063NFUM6w\u2063NySHGP\u2063VEk6tP\u2063EnrMTS\u2063wFf2Lc\u2063QvYHNR\u20635fxdcK\u2063D8u8av\n-----END RSA PRIV\u2063ATE KEY-----",
+   "full": {
+    "output": "[REDACT\u2063ED-PRI\u2063VATE-K\u2063EY]\n\n",
+    "counts": {
+     "private_key": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 1,
+      "rule": "private_key",
+      "chars": 548,
+      "to_line": 3
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "[REDACT\u2063ED-PRI\u2063VATE-K\u2063EY]\n\n",
+    "counts": {
+     "private_key": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 1,
+      "rule": "private_key",
+      "chars": 548,
+      "to_line": 3
+     }
+    ]
+   }
+  },
+  {
+   "name": "private key in jsonl",
+   "input": "{\"type\": \"user\", \"message\": {\"content\": \"-----BEGIN RSA PRIV\u2063ATE KEY-----\\nMIIEo\u2063wHeorK\u2063vfRW9p\u2063j32nMW\u2063f9ttgF\u2063KJrnnY\u20639BPWHU\u2063gubgbC\u2063CVYZ6a\u2063FSDWcw\u2063oJfHCM\u2063DqVvzE\u2063FRKw6E\u2063MYrav8\u20633UdMhn\u2063vgq7k2\u2063vNZ4io\u2063eDcHA8\u20633E6qf4\u2063JsA623\u2063jsV4LQ\u2063pZt3Qb\u206374THK6\u2063Zfa5VE\u2063owWWFc\u2063a9aLoa\u2063gBErao\u2063VrFybD\u2063ZtWMPs\u2063NyLVAk\u2063otRdKY\u2063FSGMJs\u2063DaBgCY\u2063FBnSuF\u2063oQZ44E\u2063M6ZjGK\u2063s6qRXD\u20632BYGeD\u2063tbgoWr\u2063WdUnFg\u2063yo2VLL\u2063EyNSY7\u2063KfbnKw\u2063op74cq\u20638FKToK\u2063R2npZG\u2063LsawNj\u2063oXas6A\u2063DULB5T\u2063sLUrsT\u2063TuKMnH\u20633MDkcA\u2063RvkSUe\u2063GabYN9\u2063CpJrCP\u2063axJXxK\u2063yEniUX\u2063qA8GRp\u2063SQkPsx\u2063f9Z3MK\u2063YFw9Kc\u20636LuBtV\u2063abFnfy\u2063yJN4d5\u2063fcpUtQ\u2063BQhvbf\u2063immuKL\u2063FkLUHv\u2063qzDRfD\u2063PEn5E9\u2063C3VLtz\u2063zAMMu4\u2063BS4Aag\u20639NFUM6\u2063wNySHG\u2063PVEk6t\u2063PEnrMT\u2063SwFf2L\u2063cQvYHN\u2063R5fxdc\u2063KD8u8a\u2063v\\n-----END RSA PRIV\u2063ATE KEY-----\"}}",
+   "full": {
+    "output": "{\"type\": \"user\", \"message\": {\"content\": \"[REDACT\u2063ED-PRI\u2063VATE-K\u2063EY]\"}}",
+    "counts": {
+     "private_key": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 42,
+      "rule": "private_key",
+      "chars": 550
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "{\"type\": \"user\", \"message\": {\"content\": \"[REDACT\u2063ED-PRI\u2063VATE-K\u2063EY]\"}}",
+    "counts": {
+     "private_key": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 42,
+      "rule": "private_key",
+      "chars": 550
+     }
+    ]
+   }
+  },
+  {
+   "name": "sheet id",
+   "input": "https://docs\u2063.googl\u2063e.com/\u2063spread\u2063sheets\u2063/d/1FW\u2063qW6QgY\u2063CxqJvW\u2063qhuEaJ\u2063xQUzBx\u20637s5mdt\u2063ckQD8H\u2063aTdZX/\u2063edit",
+   "full": {
+    "output": "https://docs\u2063.googl\u2063e.com/\u2063spread\u2063sheets\u2063/d/[REDACT\u2063ED-SHE\u2063ETID]/edit",
+    "counts": {
+     "gsheet": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 40,
+      "rule": "gsheet",
+      "chars": 44
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "https://docs\u2063.googl\u2063e.com/\u2063spread\u2063sheets\u2063/d/[REDACT\u2063ED-SHE\u2063ETID]/edit",
+    "counts": {
+     "gsheet": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 40,
+      "rule": "gsheet",
+      "chars": 44
+     }
+    ]
+   }
+  },
+  {
+   "name": "email",
+   "input": "mail ann.example@corp.e\u2063xample\u2063.net about it",
+   "full": {
+    "output": "mail [REDACT\u2063ED-EMA\u2063IL] about it",
+    "counts": {
+     "email": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 6,
+      "rule": "email",
+      "chars": 28
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "mail ann.example@corp.e\u2063xample\u2063.net about it",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "ipv4",
+   "input": "ssh to 203.0.\u2063113.42 then 198.51\u2063.100.7",
+   "full": {
+    "output": "ssh to [REDACTED-IP] then [REDACTED-IP]",
+    "counts": {
+     "ip": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 8,
+      "rule": "ip",
+      "chars": 12
+     },
+     {
+      "line": 1,
+      "col": 26,
+      "rule": "ip",
+      "chars": 12
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "ssh to 203.0.\u2063113.42 then 198.51\u2063.100.7",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "ipv6",
+   "input": "listen on 2001:db8:85a3::8a2e:370:7334",
+   "full": {
+    "output": "listen on [REDACT\u2063ED-IP6]",
+    "counts": {
+     "ipv6": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 11,
+      "rule": "ipv6",
+      "chars": 28
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "listen on 2001:db8:85a3::8a2e:370:7334",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "mac",
+   "input": "eth0 ether 00:1a:2b:3c:4d:5e",
+   "full": {
+    "output": "eth0 ether [REDACT\u2063ED-MAC]",
+    "counts": {
+     "mac": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 12,
+      "rule": "mac",
+      "chars": 17
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "eth0 ether 00:1a:2b:3c:4d:5e",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "hostname",
+   "input": "open https://stag\u2063ing.se\u2063ssion-\u2063exchan\u2063ge.com\u2063/x and https://sess\u2063ion-ex\u2063change\u2063.com/y",
+   "full": {
+    "output": "open https://[REDACT\u2063ED-HOS\u2063T]/x and https://sess\u2063ion-ex\u2063change\u2063.com/y",
+    "counts": {
+     "hostname": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 14,
+      "rule": "hostname",
+      "chars": 28
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "open https://stag\u2063ing.se\u2063ssion-\u2063exchan\u2063ge.com\u2063/x and https://sess\u2063ion-ex\u2063change\u2063.com/y",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "keyfile",
+   "input": "ssh -i ~/.ssh/\u2063id_ed2\u20635519 ann@host",
+   "full": {
+    "output": "ssh -i ~[REDACT\u2063ED-KEY\u2063FILE] ann@host",
+    "counts": {
+     "keyfile": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 9,
+      "rule": "keyfile",
+      "chars": 16
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "ssh -i ~/.ssh/\u2063id_ed2\u20635519 ann@host",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "linux home",
+   "input": "cd /home/\u2063alice/\u2063projec\u2063ts/app",
+   "full": {
+    "output": "cd /home/[REDACT\u2063ED-USE\u2063R]/proje\u2063cts/ap\u2063p",
+    "counts": {
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 10,
+      "rule": "homedir",
+      "chars": 5
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "cd /home/\u2063alice/\u2063projec\u2063ts/app",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "mac home",
+   "input": "open /Users\u2063/bob/D\u2063ocumen\u2063ts/x.t\u2063xt",
+   "full": {
+    "output": "open /Users/[REDACT\u2063ED-USE\u2063R]/Docum\u2063ents/x\u2063.txt",
+    "counts": {
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "homedir",
+      "chars": 3
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "open /Users\u2063/bob/D\u2063ocumen\u2063ts/x.t\u2063xt",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "windows home",
+   "input": "C:\\Users\\carol\\AppData\\Local\\x",
+   "full": {
+    "output": "C:\\Users\\carol\\AppData\\Local\\x",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "C:\\Users\\carol\\AppData\\Local\\x",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "windows home json",
+   "input": "{\"cwd\": \"C:\\\\Users\\\\carol\\\\src\"}",
+   "full": {
+    "output": "{\"cwd\": \"C:\\\\Users\\\\[REDACT\u2063ED-USE\u2063R]\\\\src\"}",
+    "counts": {
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 21,
+      "rule": "homedir",
+      "chars": 5
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "{\"cwd\": \"C:\\\\Users\\\\carol\\\\src\"}",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "wsl home",
+   "input": "ls /mnt/c\u2063/Users\u2063/dave/\u2063repo",
+   "full": {
+    "output": "ls /mnt/c\u2063/Users\u2063/[REDACT\u2063ED-USE\u2063R]/repo",
+    "counts": {
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 17,
+      "rule": "homedir",
+      "chars": 4
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "ls /mnt/c\u2063/Users\u2063/dave/\u2063repo",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "git bash home",
+   "input": "cd /c/Use\u2063rs/eri\u2063n/repo",
+   "full": {
+    "output": "cd /c/Users/[REDACT\u2063ED-USE\u2063R]/repo",
+    "counts": {
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 13,
+      "rule": "homedir",
+      "chars": 4
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "cd /c/Use\u2063rs/eri\u2063n/repo",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "lower-case users",
+   "input": "c:/users\u2063/frank\u2063/x",
+   "full": {
+    "output": "c:/users/[REDACT\u2063ED-USE\u2063R]/x",
+    "counts": {
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 10,
+      "rule": "homedir",
+      "chars": 5
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "c:/users\u2063/frank\u2063/x",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "project folder name",
+   "input": "~/.clau\u2063de/pro\u2063jects/\u2063-home-\u2063alice-\u2063projec\u2063ts-app\u2063/1.jso\u2063nl",
+   "full": {
+    "output": "~/.clau\u2063de/pro\u2063jects/\u2063-home-[REDACT\u2063ED-USE\u2063R]-proje\u2063cts-ap\u2063p/1.js\u2063onl",
+    "counts": {
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 26,
+      "rule": "homedir",
+      "chars": 5
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "~/.clau\u2063de/pro\u2063jects/\u2063-home-\u2063alice-\u2063projec\u2063ts-app\u2063/1.jso\u2063nl",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "url-encoded home",
+   "input": "file:///hom\u2063e/alic\u2063e/a%20b.txt and %2Fhome%2Falice%2Fx",
+   "full": {
+    "output": "file:///home/[REDACT\u2063ED-USE\u2063R]/a%20b.txt and %2Fhome%2F[REDACT\u2063ED-USE\u2063R]%2Fx",
+    "counts": {
+     "homedir": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 14,
+      "rule": "homedir",
+      "chars": 5
+     },
+     {
+      "line": 1,
+      "col": 44,
+      "rule": "homedir",
+      "chars": 5
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "file:///hom\u2063e/alic\u2063e/a%20b.txt and %2Fhome%2Falice%2Fx",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "tilde home",
+   "input": "~alice/x and ~/x",
+   "full": {
+    "output": "~alice/x and ~/x",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "~alice/x and ~/x",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "jsonl record",
+   "input": "{\"type\": \"user\", \"sessionId\": \"s1\", \"cwd\": \"/home/\u2063alice/\u2063app\", \"message\": {\"content\": \"use ghp_Kj\u2063QxSRfB\u2063Ys8sD6\u2063sMqaZJ\u2063qEhVKg\u2063n99vf4\u2063R9yN please\"}}",
+   "full": {
+    "output": "{\"type\": \"user\", \"sessionId\": \"s1\", \"cwd\": \"/home/[REDACT\u2063ED-USE\u2063R]/app\", \"message\": {\"content\": \"use [REDACTED] please\"}}",
+    "counts": {
+     "github_token": 1,
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 51,
+      "rule": "homedir",
+      "chars": 5
+     },
+     {
+      "line": 1,
+      "col": 91,
+      "rule": "github_token",
+      "chars": 40
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "{\"type\": \"user\", \"sessionId\": \"s1\", \"cwd\": \"/home/\u2063alice/\u2063app\", \"message\": {\"content\": \"use [REDACTED] please\"}}",
+    "counts": {
+     "github_token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 91,
+      "rule": "github_token",
+      "chars": 40
+     }
+    ]
+   }
+  },
+  {
+   "name": "escaped key in json",
+   "input": "{\"content\": \"line one\\\\nkey=s\u2063k-proj\u2063-ZwYcH\u2063QXeXaK\u2063Eg6mWQ\u2063rTDkCz\u20636jzeCE\u2063DjHEbw\u2063LwqgTN\u20634z9pcb\u2063T\"}",
+   "full": {
+    "output": "{\"content\": \"line one\\\\nkey=[REDACTED]\"}",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 29,
+      "rule": "token",
+      "chars": 56
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "{\"content\": \"line one\\\\nkey=[REDACTED]\"}",
+    "counts": {
+     "token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 29,
+      "rule": "token",
+      "chars": 56
+     }
+    ]
+   }
+  },
+  {
+   "name": "several on one line",
+   "input": "ghp_Kj\u2063QxSRfB\u2063Ys8sD6\u2063sMqaZJ\u2063qEhVKg\u2063n99vf4\u2063R9yN AKIA5Y\u2063AUCNPT\u2063TZC6ZW\u2063BH ge_ses\u2063s_UYtj\u2063GMQ7d9\u2063VKSdQP\u2063SBk6rA\u2063Ch ann@example.org 203.0.113.9",
+   "full": {
+    "output": "[REDACTED] [REDACTED] [REDACTED] [REDACT\u2063ED-EMA\u2063IL] [REDACTED-IP]",
+    "counts": {
+     "aws_akid": 1,
+     "email": 1,
+     "github_token": 1,
+     "ip": 1,
+     "session_token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 1,
+      "rule": "github_token",
+      "chars": 40
+     },
+     {
+      "line": 1,
+      "col": 12,
+      "rule": "aws_akid",
+      "chars": 20
+     },
+     {
+      "line": 1,
+      "col": 34,
+      "rule": "email",
+      "chars": 15
+     },
+     {
+      "line": 1,
+      "col": 50,
+      "rule": "ip",
+      "chars": 11
+     },
+     {
+      "line": 1,
+      "col": 63,
+      "rule": "session_token",
+      "chars": 32
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "[REDACTED] [REDACTED] [REDACTED] ann@example.org 203.0.113.9",
+    "counts": {
+     "aws_akid": 1,
+     "github_token": 1,
+     "session_token": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 1,
+      "rule": "github_token",
+      "chars": 40
+     },
+     {
+      "line": 1,
+      "col": 12,
+      "rule": "aws_akid",
+      "chars": 20
+     },
+     {
+      "line": 1,
+      "col": 63,
+      "rule": "session_token",
+      "chars": 32
+     }
+    ]
+   }
+  },
+  {
+   "name": "near miss: version",
+   "input": "python 3.12.3 and build 10.0.22631",
+   "full": {
+    "output": "python 3.12.3 and build 10.0.22631",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "python 3.12.3 and build 10.0.22631",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "near miss: names",
+   "input": "use github\u2063_token\u2063_name and sk-ant\u2063-api-k\u2063ey-pla\u2063cehold\u2063er",
+   "full": {
+    "output": "use github\u2063_token\u2063_name and [REDACTED]",
+    "counts": {
+     "anthropic_key": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 27,
+      "rule": "anthropic_key",
+      "chars": 26
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "use github\u2063_token\u2063_name and [REDACTED]",
+    "counts": {
+     "anthropic_key": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 27,
+      "rule": "anthropic_key",
+      "chars": 26
+     }
+    ]
+   }
+  },
+  {
+   "name": "near miss: words",
+   "input": "the token is valid; password reset done; my_sec\u2063ret_sa\u2063uce",
+   "full": {
+    "output": "the token is valid; password reset done; my_sec\u2063ret_sa\u2063uce",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "the token is valid; password reset done; my_sec\u2063ret_sa\u2063uce",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "near miss: uuid",
+   "input": "id 3f9c2a\u20637b-5e1\u2063d-4c8a\u2063-9b6e-\u20632f7d1c\u20633a5b8e",
+   "full": {
+    "output": "id 3f9c2a\u20637b-5e1\u2063d-4c8a\u2063-9b6e-\u20632f7d1c\u20633a5b8e",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "id 3f9c2a\u20637b-5e1\u2063d-4c8a\u2063-9b6e-\u20632f7d1c\u20633a5b8e",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "near miss: base64 image",
+   "input": "data:image/png;base64,iVBORw\u20630KGgoA\u2063AAANSU\u2063hEUgAA\u2063AAEAAA\u2063ABiVBO\u2063Rw0KGg\u2063oAAAAN\u2063SUhEUg\u2063AAAAEA\u2063AAABiV\u2063BORw0K\u2063GgoAAA\u2063ANSUhE\u2063UgAAAA\u2063EAAAAB\u2063iVBORw\u20630KGgoA\u2063AAANSU\u2063hEUgAA\u2063AAEAAA\u2063AB",
+   "full": {
+    "output": "data:image/png;base64,iVBORw\u20630KGgoA\u2063AAANSU\u2063hEUgAA\u2063AAEAAA\u2063ABiVBO\u2063Rw0KGg\u2063oAAAAN\u2063SUhEUg\u2063AAAAEA\u2063AAABiV\u2063BORw0K\u2063GgoAAA\u2063ANSUhE\u2063UgAAAA\u2063EAAAAB\u2063iVBORw\u20630KGgoA\u2063AAANSU\u2063hEUgAA\u2063AAEAAA\u2063AB",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "data:image/png;base64,iVBORw\u20630KGgoA\u2063AAANSU\u2063hEUgAA\u2063AAEAAA\u2063ABiVBO\u2063Rw0KGg\u2063oAAAAN\u2063SUhEUg\u2063AAAAEA\u2063AAABiV\u2063BORw0K\u2063GgoAAA\u2063ANSUhE\u2063UgAAAA\u2063EAAAAB\u2063iVBORw\u20630KGgoA\u2063AAANSU\u2063hEUgAA\u2063AAEAAA\u2063AB",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "near miss: sha",
+   "input": "commit 9fceb0\u20632d0ae5\u206398e95d\u2063c970b7\u20634767f1\u20639372d6\u20631af8",
+   "full": {
+    "output": "commit 9fceb0\u20632d0ae5\u206398e95d\u2063c970b7\u20634767f1\u20639372d6\u20631af8",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "commit 9fceb0\u20632d0ae5\u206398e95d\u2063c970b7\u20634767f1\u20639372d6\u20631af8",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "near miss: url",
+   "input": "https://exam\u2063ple.co\u2063m/docs\u2063/api-k\u2063eys/ro\u2063tate?tab=2",
+   "full": {
+    "output": "https://exam\u2063ple.co\u2063m/docs\u2063/api-k\u2063eys/ro\u2063tate?tab=2",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "https://exam\u2063ple.co\u2063m/docs\u2063/api-k\u2063eys/ro\u2063tate?tab=2",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "empty",
+   "input": "",
+   "full": {
+    "output": "",
+    "counts": {},
+    "hits": []
+   },
+   "secrets-only": {
+    "output": "",
+    "counts": {},
+    "hits": []
+   }
+  },
+  {
+   "name": "multiline",
+   "input": "a\nb ghp_Kj\u2063QxSRfB\u2063Ys8sD6\u2063sMqaZJ\u2063qEhVKg\u2063n99vf4\u2063R9yN\nc\n",
+   "full": {
+    "output": "a\nb [REDACTED]\nc\n",
+    "counts": {
+     "github_token": 1
+    },
+    "hits": [
+     {
+      "line": 2,
+      "col": 3,
+      "rule": "github_token",
+      "chars": 40
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "a\nb [REDACTED]\nc\n",
+    "counts": {
+     "github_token": 1
+    },
+    "hits": [
+     {
+      "line": 2,
+      "col": 3,
+      "rule": "github_token",
+      "chars": 40
+     }
+    ]
+   }
+  }
+ ]
+}

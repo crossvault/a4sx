@@ -18,7 +18,8 @@ In scope (this repository, the `a4sx` client and SDK):
 - the session token: stored anywhere other than the config dir with mode 0600, printed, logged, put
   into an exception message, sent to a host other than the configured server, sent over plain http
   to a non-loopback host, or forwarded on a redirect;
-- the client-side pre-scrub: a secret shape that it is documented to catch but misses, or input that
+- the client-side scrub: a secret or personal-data shape that it is documented to catch but misses, a
+  difference from the a4sx CLI's scrub on the same input, or input that
   makes it use excessive CPU or memory;
 - `resume`: writing outside the Claude Code projects directory, overwriting an existing session, or
   keeping permission-bypass flags for a session from another author without `--trust-base`;
@@ -28,8 +29,8 @@ Out of scope:
 
 - the hosted service at session-exchange.com. Report problems with it to the same address; they are
   handled, but not in this repository;
-- names, e-mail addresses, IP addresses or paths left in an uploaded transcript. The pre-scrub is
-  documented not to remove them; it is a backstop, not a guarantee;
+- personal data the scrub is not documented to remove (for example people's names in prose), or anything
+  left in an upload made with `--keep-pii` or `--no-scrub`. The scrub is a backstop, not a guarantee;
 - planted instructions in a session from another author. Treat such sessions as untrusted input;
   `a4sx resume` says so and keeps Claude Code's permission prompts on.
 

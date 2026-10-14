@@ -1,42 +1,42 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 crossVault GmbH
-"""The client-side pre-scrub that runs before a transcript leaves your machine.
+"""The client-side scrub that runs before a transcript leaves your machine.
 
-It uses the `redact-transcripts <https://pypi.org/project/redact-transcripts/>`_ engine with its
-``secret.*`` rules (API keys, tokens, bearer and basic auth, URL credentials, private keys,
-secret-named assignments, ...) plus one rule for a4sx session tokens. Personal-data rules
-(e-mail, IP addresses, home directories) are **off** here, because they would rewrite paths a
-resumed session relies on; run ``redact-transcripts`` yourself if you want them.
+It applies exactly the rules of the a4sx CLI (vendored in :mod:`a4sx._cli_scrub` by
+``tools/vendor_scrub.py``, with parity vectors in the test suite), which are the a4sx server's rules:
 
-JSON Lines are redacted after decoding, so escaping cannot hide a secret, and every line stays
-valid JSON with its ids and links intact. Lines with nothing to redact keep their exact bytes.
+- ``full`` (the default): secrets (API keys and tokens, bearer, basic and digest auth, credentials in
+  URLs, private keys, AWS signatures, JWTs, secret-named assignments), command-line passwords, Google
+  Sheet ids, and personal data, hosts, IP and MAC addresses, home-directory user names and key-file paths;
+- ``secrets-only`` (``push --keep-pii``): everything except the personal-data, host, IP, MAC, home-directory
+  and key-file rules;
+- ``none`` (``push --no-scrub``): nothing.
 
-This is a backstop, not a guarantee: the server scrubs again on upload, and neither understands
-meaning. Review what you push.
+Each matched value is replaced with a fixed marker (``[REDACTED]``, ``[REDACTED-EMAIL]``,
+``[REDACTED-USER]`` ...) that keeps JSON string values valid. Lines with nothing to redact keep their exact
+bytes. The server scrubs every upload again. Both are pattern-based backstops, not a guarantee: review what
+you push.
 
-A report never contains a matched value: only rule names, counts and line numbers.
+A report never contains a matched value: only rule names, counts, line and column numbers and lengths.
 """
 
 from __future__ import annotations
 
 import hashlib
-import re
 from dataclasses import asdict, dataclass, field
 from typing import Dict, List, Tuple
 
-from redact_transcripts import Redactor, Rule, default_rules, redact_bytes
+from . import _cli_scrub
 
-#: a4sx session tokens (``a4sx login --token``) are not in the generic rule set.
-# This rule matches a4sx session tokens: `ge_sess_` is the prefix of the tokens the a4sx service issues.
-SESSION_TOKEN_RULE = Rule("secret.a4sx_session", re.compile(r"\bge_sess_[A-Za-z0-9_\-]{6,}"))
+# The a4sx token rules (`session_token`, `polaris_tok` and the `ge_…_` token shapes in _cli_scrub) match the
+# tokens the a4sx service issues: `ge_sess_`, `ge_tok_`, `pt_` ... are the service's own token prefixes.
 
-#: Rule-name prefixes that are switched off for the pre-scrub (see the module docstring).
-DISABLED = ("pii", "infra")
-
-
-def redactor() -> Redactor:
-    """The redactor the pre-scrub uses."""
-    return Redactor(rules=[SESSION_TOKEN_RULE] + list(default_rules()), disable=DISABLED)
+#: The scrub modes, as the CLI names them (and sends with an upload as ``client_scrub``).
+SCRUB_MODES = ("full", "secrets-only", "none")
+#: The rules ``secrets-only`` (``--keep-pii``) leaves out.
+PII_RULES = frozenset(_cli_scrub._PII)
+#: The a4sx CLI release the rules were vendored from.
+RULES_VERSION = _cli_scrub.CLI_VERSION
 
 
 def sha256(data: bytes) -> str:
@@ -45,12 +45,14 @@ def sha256(data: bytes) -> str:
 
 @dataclass
 class ScrubReport:
-    """What the pre-scrub changed. Never holds a matched value."""
+    """What the scrub changed. Never holds a matched value."""
 
     enabled: bool
+    mode: str = "full"
     lines_changed: int = 0
     rules: Dict[str, int] = field(default_factory=dict)
     lines: List[int] = field(default_factory=list)
+    hits: List[dict] = field(default_factory=list)  # {line, col, rule, chars[, to_line]}: positions only
     local_sha256: str = ""
     uploaded_sha256: str = ""
 
@@ -60,43 +62,54 @@ class ScrubReport:
 
     def to_dict(self) -> dict:
         d = asdict(self)
+        d.pop("hits")
         d["identical"] = self.identical
         return d
 
     def summary(self) -> str:
-        """One line, e.g. ``client scrub: 2 lines changed (secret.bearer: 2) — lines 1, 3``."""
+        """One line, e.g. ``client scrub: 2 lines changed (bearer: 2) — lines 1, 3``."""
         if not self.enabled:
             return "client scrub: skipped (--no-scrub)"
-        if not self.lines:
-            return "client scrub: 0 lines changed"
-        n = len(self.lines)
-        rules = ", ".join(f"{k}: {v}" for k, v in sorted(self.rules.items()))
-        shown = ", ".join(map(str, self.lines[:20])) + (f", … (+{n - 20} more)" if n > 20 else "")
-        s = "s" if n != 1 else ""
-        return f"client scrub: {n} line{s} changed ({rules}) — line{s} {shown}"
+        line = _cli_scrub._scrub_summary(self.rules, self.hits)
+        if self.mode == "secrets-only":
+            line += " [--keep-pii: personal data, hosts, IPs and paths kept]"
+        return line
 
 
-def scrub_bytes(data: bytes, enabled: bool = True) -> Tuple[bytes, ScrubReport]:
-    """Pre-scrub ``data`` (a transcript, JSON Lines or text). Returns ``(upload_bytes, report)``.
+def _mode(enabled: bool, mode: str) -> str:
+    if mode not in SCRUB_MODES:
+        raise ValueError(f"unknown scrub mode {mode!r} (one of {', '.join(SCRUB_MODES)})")
+    return mode if enabled else "none"
 
-    With ``enabled=False`` the bytes pass through unchanged and the report says so.
-    """
+
+def scrub_bytes(data: bytes, enabled: bool = True, mode: str = "full") -> Tuple[bytes, ScrubReport]:
+    """Scrub ``data`` (a transcript, JSON Lines or text). Returns ``(upload_bytes, report)``.
+
+    ``mode`` is ``full`` (default), ``secrets-only`` or ``none``; ``enabled=False`` is ``none``. With
+    ``none`` the bytes pass through unchanged and the report says so. Invalid UTF-8 is replaced (U+FFFD),
+    as the CLI does; the report's two hashes then differ even when no rule fired."""
+    mode = _mode(enabled, mode)
     local = sha256(data)
-    if not enabled:
-        return data, ScrubReport(enabled=False, local_sha256=local, uploaded_sha256=local)
-    out, rep = redact_bytes(data, "auto", redactor())
-    lines = sorted(set(rep.changed_lines))
+    if mode == "none":
+        return data, ScrubReport(enabled=False, mode="none", local_sha256=local, uploaded_sha256=local)
+    text, counts, hits = _cli_scrub.scrub_detail(data.decode("utf-8", "replace"), mode)
+    out = text.encode("utf-8")
+    lines = sorted({h["line"] for h in hits})
     return out, ScrubReport(
         enabled=True,
+        mode=mode,
         lines_changed=len(lines),
-        rules=dict(sorted(rep.rules.items())),
+        rules=dict(sorted(counts.items())),
         lines=lines,
+        hits=[dict(h) for h in hits],
         local_sha256=local,
         uploaded_sha256=sha256(out),
     )
 
 
-def scrub_text(text: str) -> Tuple[str, Dict[str, int]]:
-    """Pre-scrub one string. Returns ``(scrubbed, per-rule counts)``."""
-    counts: Dict[str, int] = {}
-    return redactor().redact_text(text, counts), {k: v for k, v in counts.items() if v}
+def scrub_text(text: str, mode: str = "full") -> Tuple[str, Dict[str, int]]:
+    """Scrub one string. Returns ``(scrubbed, per-rule counts)``."""
+    if _mode(True, mode) == "none":
+        return text, {}
+    out, counts = _cli_scrub.scrub(text, mode)
+    return out, {k: v for k, v in counts.items() if v}

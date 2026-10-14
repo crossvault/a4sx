@@ -25,8 +25,11 @@ A DCO check runs on every pull request. To fix a missing sign-off on your last c
   and a guard fails any test that opens a non-loopback connection. Use synthetic transcripts and
   token-shaped strings assembled at runtime, never real ones.
 - Before pushing, run `ruff check .`, `reuse lint` and `pytest -q`; CI runs the same on Python 3.9-3.13.
-- Runtime dependencies stay minimal (today: `redact-transcripts`). Please open an issue first if a change
-  needs a new one.
+- There are no runtime dependencies (stdlib only). Please open an issue first if a change needs one.
+- The client scrub (`src/a4sx/_cli_scrub.py`) is generated from the a4sx CLI by `tools/vendor_scrub.py`,
+  so it applies exactly the CLI's (and the server's) rules. Don't edit it by hand: scrub rule changes go
+  into the CLI, then `python tools/vendor_scrub.py` regenerates the module and the parity vectors.
+  CI fails while they differ from the published CLI (`python tools/vendor_scrub.py --check`).
 - The CLI (`a4sx/cli.py`) only parses, prints and maps errors; behaviour belongs in `a4sx/sdk.py`, so
   other tools get it too.
 - New source files start with the SPDX header:

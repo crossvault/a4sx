@@ -6,7 +6,7 @@ Claude Code, Codex CLI and Grok Build sessions can be saved, listed, searched an
 Code sessions can be resumed today.
 
 Everything the ``a4sx`` command does goes through this module, so other tools (an MCP server, an
-editor plugin, a script) can do the same. Stdlib only, apart from the pre-scrub engine.
+editor plugin, a script) can do the same. Stdlib only.
 
 Quick tour::
 
@@ -1036,6 +1036,7 @@ class Client:
         parent: Optional[str] = None,
         compact: bool = False,
         scrub: bool = True,
+        keep_pii: bool = False,
         lineage: bool = True,
         extra_params: Optional[Dict[str, str]] = None,
         untrusted: bool = False,
@@ -1043,8 +1044,9 @@ class Client:
     ) -> PushResult:
         """Save a transcript to your private library (``POST /library/push``).
 
-        - ``scrub``: run the client-side pre-scrub first (:func:`a4sx.scrub.scrub_bytes`); the server
-          scrubs again either way. The report is in ``result.scrub``.
+        - ``scrub``: run the client-side scrub first (:func:`a4sx.scrub.scrub_bytes`, the a4sx CLI's rules:
+          secrets and personal data); the server scrubs again either way. The report is in
+          ``result.scrub``. ``keep_pii=True`` keeps personal data, hosts, IPs and paths (``secrets-only``).
         - ``into``: store as a new version of that saved session; ``compact`` marks it as the compact
           tip to resume from.
         - ``parent`` (a name or id) records a lineage edge; otherwise, for a fresh push, the edge
@@ -1062,7 +1064,7 @@ class Client:
         lineage says so), ``parent`` or ``into`` is untrusted, or ``untrusted=True``, the new entry is
         marked too (``result.untrusted``), so a later resume treats it as someone else's content.
         """
-        upload, report = scrub_bytes(bytes(data), enabled=scrub)
+        upload, report = scrub_bytes(bytes(data), enabled=scrub, mode="secrets-only" if keep_pii else "full")
         tok = self.require_token()
         q: Dict[str, str] = {k: v for k, v in (("label", label), ("title", title), ("into", into)) if v}
         edge = None
@@ -1086,9 +1088,8 @@ class Client:
         if compact and into:
             q["compact"] = "1"
         q.update(extra_params or {})
-        # What the client scrub did (upload metadata; the server scrubs regardless). The pre-scrub here runs
-        # the secret rules only, so a scrubbed push is `secrets-only`.
-        q["client_scrub"] = "secrets-only" if report.enabled else "none"
+        # What the client scrub did (upload metadata; the server scrubs regardless): full | secrets-only | none.
+        q["client_scrub"] = report.mode
         headers = {"Idempotency-Key": str(uuid.uuid4()), "X-Content-SHA256": report.uploaded_sha256}
         timeout = upload_timeout(len(upload))
         attempt = 0

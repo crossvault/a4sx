@@ -142,7 +142,7 @@ def test_push_reports_client_scrub_and_shas(signed_in, tmp_path, capsys):
     sent = signed_in.calls("POST", "/library/push")[0].body
     local, uploaded = hashlib.sha256(f.read_bytes()).hexdigest(), hashlib.sha256(sent).hexdigest()
     assert local != uploaded
-    assert "a4sx push: client scrub: 2 lines changed (secret.bearer: 2, secret.github_token: 1) — lines 1, 3" in cap.err
+    assert "a4sx push: client scrub: 2 lines changed (bearer: 2, github_token: 1) — lines 1, 3" in cap.err
     assert f"local sha256    {local}" in cap.err
     assert f"uploaded sha256 {uploaded}: DIFFERS from the local file (the client scrub rewrote it)" in cap.err
     body = json.loads(cap.out)
@@ -175,8 +175,26 @@ def test_dry_run_makes_no_network_call_and_needs_no_login(env, tmp_path, capsys)
     assert cli.main(["push", str(f), "--dry-run"]) == 0
     out = capsys.readouterr().out
     assert env.requests == []
-    assert "  secret.bearer: 2" in out and "  secret.github_token: 1" in out
+    assert ": bearer  [masked" in out and ": github_token  [masked" in out and "line 3 col" in out
     assert "lines 1, 3" in out and "(DIFFERS from the local file)" in out and "dry run: nothing uploaded" in out
+
+
+def test_keep_pii_sends_secrets_only_and_warns(signed_in, tmp_path, capsys):
+    f = tmp_path / "pii.jsonl"
+    f.write_text(json.dumps({"type": "user", "sessionId": "s", "cwd": "/home/alice/app",
+                             "message": {"content": "mail ann@corp.example.net"}}) + "\n")
+    assert cli.main(["push", str(f), "--keep-pii"]) == 0
+    sent = signed_in.calls("POST", "/library/push")[0]
+    assert sent.query["client_scrub"] == "secrets-only" and b"/home/alice/app" in sent.body
+    assert "WARNING: --keep-pii" in capsys.readouterr().err
+    assert cli.main(["push", str(f)]) == 0                       # default: personal data is removed
+    sent = signed_in.calls("POST", "/library/push")[1]
+    assert sent.query["client_scrub"] == "full" and b"alice" not in sent.body and b"ann@" not in sent.body
+
+
+def test_keep_pii_and_no_scrub_conflict(signed_in, tmp_path):
+    with pytest.raises(SystemExit):
+        cli.main(["push", str(_file(tmp_path)), "--keep-pii", "--no-scrub"])
 
 
 @pytest.mark.parametrize("dry", [False, True])

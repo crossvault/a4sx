@@ -218,27 +218,48 @@ def _push_path(a: argparse.Namespace) -> str:
     return path
 
 
-def cmd_push(a: argparse.Namespace) -> int:
+# Loud warnings for the client-scrub opt-outs, printed on every push that uses one (--dry-run included).
+SCRUB_OPT_OUT_WARNINGS = {
+    "secrets-only": (
+        "WARNING: --keep-pii: the client scrub KEEPS personal data, host names, IP and MAC addresses, "
+        "home-directory user names and key-file paths in this upload. Secrets, command-line passwords and "
+        "Sheet ids are still removed. The server still scrubs personal data on upload."),
+    "none": (
+        "WARNING: --no-scrub: the client scrub is OFF. Nothing is removed on this machine: secrets, tokens, "
+        "command-line passwords, private keys, personal data, host names, IP addresses and paths leave it "
+        "exactly as they are in the file. The server still scrubs on upload, so the stored copy is NOT a raw "
+        "backup."),
+}
+
+
+def _scrub_mode(a: argparse.Namespace) -> str:
     if a.no_scrub and a.fail_on_scrub:
         sys.exit(f"{PROG} push: --no-scrub and --fail-on-scrub are mutually exclusive")
+    if a.no_scrub and getattr(a, "keep_pii", False):
+        sys.exit(f"{PROG} push: --no-scrub and --keep-pii are mutually exclusive "
+                 "(--no-scrub already skips every client rule)")
+    return "none" if a.no_scrub else "secrets-only" if getattr(a, "keep_pii", False) else "full"
+
+
+def cmd_push(a: argparse.Namespace) -> int:
+    mode = _scrub_mode(a)
     path = _push_path(a)
+    if mode in SCRUB_OPT_OUT_WARNINGS:
+        _err(f"{PROG} push: {SCRUB_OPT_OUT_WARNINGS[mode]}")
     with open(os.path.expanduser(path), "rb") as f:
         local = f.read()
-    upload, rep = scrub_bytes(local, enabled=not a.no_scrub)
+    upload, rep = scrub_bytes(local, mode=mode)
     if a.dry_run:
         print(f"{PROG} push --dry-run: {path}")
         print(rep.summary())
-        for rule, n in sorted(rep.rules.items()):
-            print(f"  {rule}: {n}")
+        for h in rep.hits:
+            span = f"lines {h['line']}-{h['to_line']}" if h.get("to_line") else f"line {h['line']}"
+            print(f"  {span} col {h['col']}: {h['rule']}  [masked {h['chars']} chars]")
         print(f"local sha256:    {rep.local_sha256}")
         print(f"would upload:    {rep.uploaded_sha256}"
               + ("  (identical to the local file)" if rep.identical else "  (DIFFERS from the local file)"))
         print("dry run: nothing uploaded")
         return FAIL_ON_SCRUB_EXIT if (a.fail_on_scrub and rep.lines) else 0
-    if a.no_scrub:
-        _err(f"{PROG} push: WARNING: --no-scrub: the session is uploaded WITHOUT the client-side secret "
-             "scrub (the server still scrubs). It may contain credentials; `--dry-run` shows what the "
-             "scrub would change.")
     _err(f"{PROG} push: {rep.summary()}")
     if a.fail_on_scrub and rep.lines:
         _err(f"{PROG} push: --fail-on-scrub: the client scrub would change the upload; nothing uploaded. "
@@ -260,7 +281,7 @@ def cmd_push(a: argparse.Namespace) -> int:
 
     # The upload is exactly what was reported above (scrub_bytes is deterministic).
     res = client.push(local, label=a.label, title=a.title, into=a.into, parent=a.parent, compact=a.compact,
-                      scrub=not a.no_scrub, on_retry=on_retry)
+                      scrub=mode != "none", keep_pii=mode == "secrets-only", on_retry=on_retry)
     if res.parent:
         _err(f"{PROG}: recording lineage: parent {res.parent}")
     srv = res.response.get("redactions")
@@ -724,8 +745,8 @@ tokens squash version completion" -- "$cur"))
     fetch|delete|squash|resume) COMPREPLY=($(compgen -W "$(a4sx __complete sessions 2>/dev/null)" -- "$cur"));;
     tokens|craft)  COMPREPLY=($(compgen -W "$(a4sx __complete sessions 2>/dev/null)" -- "$cur"))
                    COMPREPLY+=($(compgen -f -- "$cur"));;
-    push)          COMPREPLY=($(compgen -f -W "--latest --label --title --into --parent --compact --no-scrub \
---dry-run --fail-on-scrub" -- "$cur"));;
+    push)          COMPREPLY=($(compgen -f -W "--latest --label --title --into --parent --compact --keep-pii \
+--no-scrub --dry-run --fail-on-scrub" -- "$cur"));;
     list)          COMPREPLY=($(compgen -W "--sort --json" -- "$cur"));;
     search)        COMPREPLY=($(compgen -W "--library --tag --sort --limit --offset --json" -- "$cur"));;
     login)         COMPREPLY=($(compgen -W "--provider --base --token --no-browser" -- "$cur"));;
@@ -796,8 +817,11 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--into", metavar="ID", help="save as a NEW VERSION of an existing saved session")
     p.add_argument("--parent", metavar="NAME", help="record a lineage parent (name or id)")
     p.add_argument("--compact", action="store_true", help="with --into: mark this version as the compact tip")
+    p.add_argument("--keep-pii", action="store_true",
+                   help="keep personal data, host names, IP addresses and paths: the client scrub removes secrets, "
+                        "command-line passwords and Sheet ids only (the server still scrubs personal data)")
     p.add_argument("--no-scrub", action="store_true",
-                   help="skip the client-side secret scrub (the server still scrubs)")
+                   help="skip the client-side scrub entirely (the server still scrubs)")
     p.add_argument("--dry-run", action="store_true",
                    help="show what the client scrub would change and the sha256 that would be uploaded; "
                         "uploads nothing, needs no sign-in")
@@ -857,7 +881,7 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--into", metavar="ID")
     p.add_argument("--parent", metavar="NAME")
     p.add_argument("--no-scrub", action="store_true",
-                   help="DANGEROUS: upload without the client-side secret scrub (the server still scrubs)")
+                   help="DANGEROUS: upload without the client-side scrub (the server still scrubs)")
 
     p = add("tokens", cmd_tokens, "estimate a session's token footprint against a context window")
     p.add_argument("session", nargs="?", help="saved name, or a local .jsonl path")

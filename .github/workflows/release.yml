@@ -29,6 +29,8 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - run: python -m pip install -e '.[test]'
       - run: python -m pytest -q
+      - name: The vendored scrub matches the published a4sx CLI
+        run: python tools/vendor_scrub.py --check
 
   build:
     needs: test

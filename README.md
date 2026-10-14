@@ -14,8 +14,8 @@ as a new local session. `a4sx` is the command-line tool and Python SDK for
 [session-exchange.com](https://session-exchange.com).
 
 - **Push** a session to your private library: Claude Code and Codex CLI transcripts, and Grok Build
-  session folders. A client-side secret scrub runs *before* anything leaves your machine, and push
-  tells you exactly what it changed.
+  session folders. A client-side scrub (secrets and personal data, the same rules as the a4sx CLI and
+  server) runs *before* anything leaves your machine, and push tells you exactly what it changed.
 - **Resume** a saved session anywhere: `a4sx resume <name>` writes it as a fresh Claude Code
   session in the directory you are in and starts `claude --resume`. Your saved copy never changes.
 - **Lineage**: a session you resumed and push again is recorded as a child of the one it came from,
@@ -23,8 +23,14 @@ as a new local session. `a4sx` is the command-line tool and Python SDK for
 - **Search** published sessions and add the ones you are entitled to to your library.
 - **SDK**: everything the command does is in `a4sx.sdk`, for your own scripts, plugins or MCP servers.
 
-Python 3.9+. The only dependency is [`redact-transcripts`](https://pypi.org/project/redact-transcripts/)
-(stdlib-only), which powers the pre-scrub.
+Python 3.9+, no dependencies (stdlib only).
+
+**Private library**: the sessions saved under your a4sx account on session-exchange.com. Its entries
+are not listed in the marketplace and not returned by public search; they are listed, fetched,
+versioned and deleted through the a4sx API with your own sign-in (or an agent key you create). Listing
+a session in the marketplace is a separate step in the web app, with a review. "Private" describes who
+can list and fetch an entry through a4sx; the server stores the bytes you upload, after scrubbing them
+again.
 
 | Harness | push, list, search, fetch | resume |
 |---|---|---|
@@ -49,7 +55,7 @@ Save the Claude Code session you worked in most recently:
 
 ```console
 $ a4sx push --latest --label my-work
-a4sx push: client scrub: 1 line changed (secret.github_token: 1) — line 212
+a4sx push: client scrub: 2 lines changed (github_token: 1, homedir: 3) — lines 4, 212
 a4sx push: local sha256    5d1c…
 a4sx push: uploaded sha256 9a07…: DIFFERS from the local file (the client scrub rewrote it). …
 { "collection": "my-work-…", "status": "staged (private)", … }
@@ -89,7 +95,7 @@ files (`chat_history.jsonl`, `system_prompt.txt`, ...) is refused.
 |---|---|
 | `a4sx login [--no-browser] [--provider github]` | Device login in the browser. `--token -` stores a token you already have (read from stdin). If the account still has to confirm an e-mail address, it says so and sets up the library on the next login. |
 | `a4sx logout` | Delete the stored token and end the session on the server. |
-| `a4sx push FILE\|FOLDER \| --latest [--label L] [--into ID] [--dry-run] [--fail-on-scrub] [--no-scrub]` | Save a session (a Claude Code or Codex CLI `.jsonl`, or a Grok Build session folder; `--latest` picks the newest local Claude Code session). `--into` adds a new version of a saved session. `--fail-on-scrub` exits 3 if the scrub would change anything. If the server is busy scrubbing other uploads, push waits as long as it asks and sends the same push again. |
+| `a4sx push FILE\|FOLDER \| --latest [--label L] [--into ID] [--dry-run] [--fail-on-scrub] [--keep-pii] [--no-scrub]` | Save a session (a Claude Code or Codex CLI `.jsonl`, or a Grok Build session folder; `--latest` picks the newest local Claude Code session). `--into` adds a new version of a saved session. `--fail-on-scrub` exits 3 if the scrub would change anything. If the server is busy scrubbing other uploads, push waits as long as it asks and sends the same push again. |
 | `a4sx list [--sort updated\|created\|name] [--json]` | Your library, as a lineage tree. |
 | `a4sx resume NAME [--cwd DIR] [--from-compact] [--no-launch]` | Continue a saved Claude Code session as a new local session. A marketplace listing recorded with another harness is refused before it is added to your library. |
 | `a4sx search [WORDS…] [--library] [--tag T]` | Search published sessions (no sign-in needed), or your own library. |
@@ -119,13 +125,18 @@ files (`chat_history.jsonl`, `system_prompt.txt`, ...) is refused.
 
 - `push` uploads the transcript **after** the client scrub (unless `--no-scrub`). It reports the
   changed lines, the rules that fired (never the values), and the sha256 of your file and of the
-  upload. The server scrubs again before storing. Both are regex backstops, **not a guarantee**:
-  review what you push.
-- The scrub covers credential shapes: API keys and tokens (Anthropic, OpenAI, GitHub, GitLab,
-  Slack, AWS, Google, Stripe, JWTs), bearer and basic auth, credentials in URLs, private keys,
-  secret-named assignments, a4sx session tokens. It does **not** remove names, e-mail addresses,
-  IP addresses or paths; use [`redact-transcripts`](https://pypi.org/project/redact-transcripts/)
-  directly if you need that.
+  upload. The server scrubs again before storing. Both are pattern-based backstops, **not a
+  guarantee**: review what you push (`--dry-run` shows every change, with line and column).
+- The client scrub applies the a4sx CLI's rules, which are the server's: API keys and tokens
+  (Anthropic, OpenAI, xAI, Groq, Google, GitHub, Slack, AWS, Stripe, z.ai, a4sx tokens, JWTs), bearer,
+  basic and digest auth, AWS request signatures, credentials in URLs, private keys, secret-named
+  assignments, command-line passwords (`mysql -p`, `curl -u`, `--password`, ...), Google Sheet ids,
+  and personal data: e-mail addresses, IP and MAC addresses, home-directory user names (Linux, macOS,
+  Windows, WSL, Git Bash, Claude Code project-folder names, URL-encoded paths), host names under
+  session-exchange.com and key-file paths. Values become markers such as `[REDACTED]` or
+  `[REDACTED-USER]`; JSON stays valid. `--keep-pii` keeps the personal-data group and removes the rest.
+  The rules are vendored from the CLI by `tools/vendor_scrub.py`; CI checks them against the published
+  CLI.
 - Your session token is stored with mode 0600, **bound to the server that issued it**, and is only
   ever sent to that server, as an `Authorization` header that is not forwarded on redirects.
   Pointing a4sx at another server (`--base`, `$A4SX_BASE`) never sends it your token; that server
@@ -181,8 +192,8 @@ Then run `claude --resume <id>`.
 - The standalone `a4sx` script from the website's installer and this package share the config dir,
   so a sign-in from one works in the other. This package does not include older command aliases,
   the launch profiles or the workspace-admin commands; keep using the installer's script if you rely on those.
-- The pre-scrub uses `redact-transcripts` 0.1.x. The installer's script carries newer scrub rules; this
-  package moves to them with `redact-transcripts` 0.2.x. The server scrubs every upload either way.
+- The client scrub is the installer's script's own, vendored with `tools/vendor_scrub.py`: a new scrub
+  rule reaches this package with its next release.
 
 ## Development
 

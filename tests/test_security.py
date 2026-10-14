@@ -110,8 +110,8 @@ def test_craft_scrubs_local_files(signed_in, tmp_path, capsys):
     sent = signed_in.calls("POST", "/library/push")[0].body.decode()
     assert GH not in sent and GH[4:] not in sent
     cap = capsys.readouterr()
-    assert "a4sx craft: client scrub: 1 line changed (secret.github_token: 1)" in cap.err
-    assert json.loads(cap.out)["client_scrub"]["rules"] == {"secret.github_token": 1}
+    assert "a4sx craft: client scrub: 1 line changed (github_token: 1)" in cap.err
+    assert json.loads(cap.out)["client_scrub"]["rules"] == {"github_token": 1}
 
 
 def test_craft_no_scrub_is_explicit_and_loud(signed_in, tmp_path, capsys):

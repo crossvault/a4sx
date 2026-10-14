@@ -39,10 +39,14 @@ website's installer (versions up to 0.10.x); this package continues its version 
 
 ### Changed
 
-- The client pre-scrub now uses the `redact-transcripts` engine (`secret.*` rules plus a rule for
-  a4sx session tokens). It redacts JSON Lines after decoding, so escaping can't hide a secret, and
-  catches more credential shapes. Rule names in reports changed accordingly (e.g. `bearer` is now
-  `secret.bearer`), and `push --dry-run` lists changed lines and per-rule counts instead of columns.
+- The client scrub is the a4sx CLI's own (the server's rules), vendored by `tools/vendor_scrub.py` from
+  the CLI 0.10.54: secrets, command-line passwords, Sheet ids, and personal data, hosts, IP and MAC
+  addresses, home-directory user names and key-file paths, ON by default as in the CLI. `push --keep-pii`
+  keeps the personal-data group (`client_scrub=secrets-only`); `--no-scrub` turns it off. Rule names and
+  the `--dry-run` listing (line, column, rule, masked length) are the CLI's. Parity vectors produced by
+  the CLI are checked offline in the test suite, and CI checks the vendored module against the published
+  CLI (on every push and weekly) and before every release. The one difference: the host rule covers
+  subdomains of session-exchange.com only.
 - The server address is a URL (`--base`, `A4SX_BASE`); `http://` is accepted for loopback hosts only.
 - The session token is written atomically with mode 0600 from the start, and is attached so that it
   is never forwarded on a redirect.
@@ -73,5 +77,6 @@ website's installer (versions up to 0.10.x); this package continues its version 
 
 ### Dependencies
 
-- The pre-scrub uses `redact-transcripts>=0.1.0,<0.2`. It moves to `redact-transcripts` 0.2.x (which
-  carries the newer scrub rules of the installer's script) once that is released.
+- None: the package is stdlib only. (An earlier candidate depended on `redact-transcripts` 0.1.x for a
+  secrets-only pre-scrub; it was replaced by the CLI's rules before release. It may move to
+  `redact-transcripts` 0.2.x once that carries the same rules and passes the same parity vectors.)

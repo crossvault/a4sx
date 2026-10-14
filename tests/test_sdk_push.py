@@ -29,10 +29,10 @@ def test_push_scrubs_before_upload(authed, stub):
     res = authed.push(_secret_transcript(), label="my-work", title="T")
     sent = stub.calls("POST", "/library/push")[0]
     assert GH not in sent.body.decode() and GH[4:] not in sent.body.decode()
-    assert sent.query == {"label": "my-work", "title": "T", "client_scrub": "secrets-only"}
+    assert sent.query == {"label": "my-work", "title": "T", "client_scrub": "full"}
     assert sent.headers["content-type"] == "application/octet-stream"
     assert sent.headers["x-content-sha256"] == hashlib.sha256(sent.body).hexdigest() == res.scrub.uploaded_sha256
-    assert res.scrub.lines == [3] and res.scrub.rules == {"secret.github_token": 1}
+    assert res.scrub.lines == [3] and res.scrub.rules == {"github_token": 1}
     assert res.response["collection"] == "my-work-1"
 
 
@@ -131,7 +131,7 @@ def test_explicit_parent_and_compact(authed, stub):
     stub.add_session("c-base", b"", label="base")
     authed.push(make_transcript(), into="c-x", compact=True, parent="base")
     q = stub.calls("POST", "/library/push")[0].query
-    assert q == {"into": "c-x", "compact": "1", "parent": "c-base", "client_scrub": "secrets-only"}
+    assert q == {"into": "c-x", "compact": "1", "parent": "c-base", "client_scrub": "full"}
     authed.push(make_transcript(), compact=True)                    # compact needs --into
     assert "compact" not in stub.calls("POST", "/library/push")[1].query
 
@@ -147,7 +147,7 @@ def test_craft_pushes_one_rethreaded_unscrubbed_base(authed, stub):
     sent = stub.calls("POST", "/library/push")[0]
     rows = [json.loads(x) for x in sent.body.decode().splitlines()]
     assert {r["sessionId"] for r in rows} == {sid} and rep["records"] == 4
-    assert sent.query == {"label": "combo", "craft_sources": "2", "client_scrub": "secrets-only"}
+    assert sent.query == {"label": "combo", "craft_sources": "2", "client_scrub": "full"}
 
 
 @pytest.mark.parametrize("n,want", [(0, 120), (512 * 1024, 121), (145 * 1024 * 1024, 410), (10 ** 12, 1800)])
