@@ -1,0 +1,66 @@
+# SPDX-License-Identifier: Apache-2.0
+# Copyright 2026 crossVault GmbH
+
+[build-system]
+requires = ["hatchling>=1.24"]
+build-backend = "hatchling.build"
+
+[project]
+name = "a4sx"
+version = "0.11.0"
+description = "Save, share and resume coding-agent sessions: the a4sx command-line tool and session SDK."
+readme = "README.md"
+requires-python = ">=3.9"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE", "LICENSES/*"]
+authors = [{ name = "crossVault GmbH" }]
+keywords = ["claude-code", "claude", "codex", "grok", "session", "transcript", "resume", "agent", "cli", "sdk"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Software Development",
+    "Topic :: Utilities",
+    "Typing :: Typed",
+]
+# redact-transcripts is the pre-scrub engine; it is itself stdlib-only.
+dependencies = ["redact-transcripts>=0.1.0,<0.2"]
+
+[project.scripts]
+a4sx = "a4sx.cli:main"
+
+[project.urls]
+Homepage = "https://session-exchange.com"
+Source = "https://github.com/crossvault/a4sx"
+Issues = "https://github.com/crossvault/a4sx/issues"
+Changelog = "https://github.com/crossvault/a4sx/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+test = ["pytest>=7"]
+dev = ["pytest>=7", "ruff>=0.5", "reuse[charset-normalizer]>=4", "build"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/a4sx"]
+
+[tool.hatch.build.targets.sdist]
+include = ["src", "tests", "LICENSES", "LICENSE", "NOTICE", "README.md", "CHANGELOG.md", "REUSE.toml"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra"
+
+[tool.ruff]
+line-length = 120
+target-version = "py39"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "I"]
+ignore = ["E731"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["a4sx"]
+known-local-folder = ["conftest", "stub_server"]
