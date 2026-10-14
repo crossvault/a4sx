@@ -1,3 +1,5 @@
+> **Pre-release:** not yet published to PyPI. Do not use it to upload sessions yet; use the official a4sx CLI from session-exchange.com.
+
 <!--
 SPDX-FileCopyrightText: 2026 crossVault GmbH
 SPDX-License-Identifier: Apache-2.0
