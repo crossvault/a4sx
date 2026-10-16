@@ -1,5 +1,5 @@
 {
- "cli_version": "0.10.54",
+ "cli_version": "0.10.61",
  "join": "\u2063",
  "modes": [
   "full",
@@ -442,7 +442,7 @@
    "full": {
     "output": "read with [REDACTED] and [REDACTED]",
     "counts": {
-     "polaris_tok": 1,
+     "prefixed_api_token": 1,
      "token": 1
     },
     "hits": [
@@ -455,7 +455,7 @@
      {
       "line": 1,
       "col": 26,
-      "rule": "polaris_tok",
+      "rule": "prefixed_api_token",
       "chars": 35
      }
     ]
@@ -463,7 +463,7 @@
    "secrets-only": {
     "output": "read with [REDACTED] and [REDACTED]",
     "counts": {
-     "polaris_tok": 1,
+     "prefixed_api_token": 1,
      "token": 1
     },
     "hits": [
@@ -476,7 +476,7 @@
      {
       "line": 1,
       "col": 26,
-      "rule": "polaris_tok",
+      "rule": "prefixed_api_token",
       "chars": 35
      }
     ]
@@ -510,6 +510,142 @@
       "col": 23,
       "rule": "bearer",
       "chars": 32
+     }
+    ]
+   }
+  },
+  {
+   "name": "glued bearer",
+   "input": "Author\u2063izatio\u2063n: Bearer uRBhno\u2063CGoza6\u2063C8qbaQ\u2063qHeKVb\u2063dHzZLL\u20638LBear\u2063er 4XG2vq\u2063ARBn4h\u2063cpohaJ\u2063HPtJuZ\u206394g6Fb\u2063ho",
+   "full": {
+    "output": "Author\u2063izatio\u2063n: Bearer [REDACTED]Bearer [REDACTED]",
+    "counts": {
+     "bearer": 1,
+     "glued_bearer": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "bearer",
+      "chars": 32
+     },
+     {
+      "line": 1,
+      "col": 62,
+      "rule": "glued_bearer",
+      "chars": 32
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "Author\u2063izatio\u2063n: Bearer [REDACTED]Bearer [REDACTED]",
+    "counts": {
+     "bearer": 1,
+     "glued_bearer": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 23,
+      "rule": "bearer",
+      "chars": 32
+     },
+     {
+      "line": 1,
+      "col": 62,
+      "rule": "glued_bearer",
+      "chars": 32
+     }
+    ]
+   }
+  },
+  {
+   "name": "glued bearer chain",
+   "input": "Bearer 76voMb\u2063DSna2w\u2063W7yuLL\u2063t43TLP\u2063==Bear\u2063er%20xdNW\u2063ierEUb\u2063NrCo2C\u2063sUJvVq\u20639aBear\u2063er WJFSnk\u2063LwLVEk\u2063RwLdcU\u2063guBMMg",
+   "full": {
+    "output": "Bearer [REDACTED]Bearer%20[REDACTED]Bearer [REDACTED]",
+    "counts": {
+     "bearer": 1,
+     "glued_bearer": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 8,
+      "rule": "bearer",
+      "chars": 26
+     },
+     {
+      "line": 1,
+      "col": 43,
+      "rule": "glued_bearer",
+      "chars": 24
+     },
+     {
+      "line": 1,
+      "col": 74,
+      "rule": "glued_bearer",
+      "chars": 24
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "Bearer [REDACTED]Bearer%20[REDACTED]Bearer [REDACTED]",
+    "counts": {
+     "bearer": 1,
+     "glued_bearer": 2
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 8,
+      "rule": "bearer",
+      "chars": 26
+     },
+     {
+      "line": 1,
+      "col": 43,
+      "rule": "glued_bearer",
+      "chars": 24
+     },
+     {
+      "line": 1,
+      "col": 74,
+      "rule": "glued_bearer",
+      "chars": 24
+     }
+    ]
+   }
+  },
+  {
+   "name": "glued password",
+   "input": "mysql://localhost?user=ann&adminp\u2063asswor\u2063d=ivit\u2063LguNHP\u2063Sa25dv ok",
+   "full": {
+    "output": "mysql://localhost?user=ann&adminp\u2063asswor\u2063d=[REDACTED] ok",
+    "counts": {
+     "glued_password": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 42,
+      "rule": "glued_password",
+      "chars": 16
+     }
+    ]
+   },
+   "secrets-only": {
+    "output": "mysql://localhost?user=ann&adminp\u2063asswor\u2063d=[REDACTED] ok",
+    "counts": {
+     "glued_password": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 42,
+      "rule": "glued_password",
+      "chars": 16
      }
     ]
    }
@@ -1576,9 +1712,18 @@
    "name": "windows home",
    "input": "C:\\Users\\carol\\AppData\\Local\\x",
    "full": {
-    "output": "C:\\Users\\carol\\AppData\\Local\\x",
-    "counts": {},
-    "hits": []
+    "output": "C:\\Users\\[REDACT\u2063ED-USE\u2063R]\\AppData\\Local\\x",
+    "counts": {
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 10,
+      "rule": "homedir",
+      "chars": 5
+     }
+    ]
    },
    "secrets-only": {
     "output": "C:\\Users\\carol\\AppData\\Local\\x",
@@ -1734,9 +1879,18 @@
    "name": "tilde home",
    "input": "~alice/x and ~/x",
    "full": {
-    "output": "~alice/x and ~/x",
-    "counts": {},
-    "hits": []
+    "output": "~[REDACT\u2063ED-USE\u2063R]/x and ~/x",
+    "counts": {
+     "homedir": 1
+    },
+    "hits": [
+     {
+      "line": 1,
+      "col": 2,
+      "rule": "homedir",
+      "chars": 5
+     }
+    ]
    },
    "secrets-only": {
     "output": "~alice/x and ~/x",

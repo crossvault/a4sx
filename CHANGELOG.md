@@ -40,7 +40,7 @@ website's installer (versions up to 0.10.x); this package continues its version 
 ### Changed
 
 - The client scrub is the a4sx CLI's own (the server's rules), vendored by `tools/vendor_scrub.py` from
-  the CLI 0.10.54: secrets, command-line passwords, Sheet ids, and personal data, hosts, IP and MAC
+  the CLI 0.10.61: secrets, command-line passwords, Sheet ids, and personal data, hosts, IP and MAC
   addresses, home-directory user names and key-file paths, ON by default as in the CLI. `push --keep-pii`
   keeps the personal-data group (`client_scrub=secrets-only`); `--no-scrub` turns it off. Rule names and
   the `--dry-run` listing (line, column, rule, masked length) are the CLI's. Parity vectors produced by
