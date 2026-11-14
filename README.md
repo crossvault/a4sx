@@ -1,4 +1,15 @@
-> **Pre-release:** not yet published to PyPI. Do not use it to upload sessions yet; use the official a4sx CLI from session-exchange.com.
+> **This is the Python SDK and a small CLI**, published on PyPI as [`a4sx`](https://pypi.org/project/a4sx/)
+> (beta). The full a4sx CLI, with meshes, cells and `launch`, is the official one from session-exchange.com:
+> [install.sh](https://session-exchange.com/install.sh) (Linux, macOS, WSL) or
+> [install.ps1](https://session-exchange.com/install.ps1) (Windows). Both commands are called `a4sx`, and on
+> Linux and macOS both usually install into `~/.local/bin`, so one replaces or shadows the other: don't
+> install both on one machine, or keep them apart with the installer's `A4SX_BIN_DIR` or pipx's
+> `PIPX_BIN_DIR`. On Linux and macOS this package can use a sign-in made with the installer's CLI, but the
+> CLI doesn't see a sign-in made here; on Windows neither sees the other's (see
+> [Compatibility](#compatibility)).
+>
+> This package's scrub was copied from CLI 0.10.61 and is well behind the current CLI's. Don't use this
+> package to upload sessions; use the official CLI.
 
 <!--
 SPDX-FileCopyrightText: 2026 crossVault GmbH
@@ -14,8 +25,8 @@ as a new local session. `a4sx` is the command-line tool and Python SDK for
 [session-exchange.com](https://session-exchange.com).
 
 - **Push** a session to your private library: Claude Code and Codex CLI transcripts, and Grok Build
-  session folders. A client-side scrub (secrets and personal data, the same rules as the a4sx CLI and
-  server) runs *before* anything leaves your machine, and push tells you exactly what it changed.
+  session folders. A client-side scrub (secrets and personal data, copied from the a4sx CLI 0.10.61, which has
+  moved on since) runs *before* anything leaves your machine, and push tells you exactly what it changed.
 - **Resume** a saved session anywhere: `a4sx resume <name>` writes it as a fresh Claude Code
   session in the directory you are in and starts `claude --resume`. Your saved copy never changes.
 - **Lineage**: a session you resumed and push again is recorded as a child of the one it came from,
@@ -51,18 +62,13 @@ signing in to https://session-exchange.com
 signed in. your private library on https://session-exchange.com is ready.
 ```
 
-Save the Claude Code session you worked in most recently:
+Search published sessions (no sign-in needed), and add one you are entitled to (free, bought or
+granted) to your library. `acquire` never buys anything: buy a paid listing in the web app first.
 
 ```console
-$ a4sx push --latest --label my-work
-a4sx push: client scrub: 2 lines changed (github_token: 1, homedir: 3) — lines 4, 212
-a4sx push: local sha256    5d1c…
-a4sx push: uploaded sha256 9a07…: DIFFERS from the local file (the client scrub rewrote it). …
-{ "collection": "my-work-…", "status": "staged (private)", … }
+$ a4sx search flaky test
+$ a4sx acquire <id>
 ```
-
-Not sure what would leave your machine? `a4sx push --latest --dry-run` shows which lines the scrub
-would change, uploads nothing and needs no sign-in.
 
 On any machine, in the folder you want to work in:
 
@@ -77,17 +83,8 @@ a4sx: new local session 0b6f… seeded from my-work-… (in /home/me/app)
 `resume` starts `claude --resume <new-id>`. Use `--no-launch` to only write the session, and
 pass arguments to `claude` after `--`, e.g. `a4sx resume my-work -- --model opus`.
 
-When you are done, `a4sx push --latest` saves your continuation; it is linked to `my-work` in the tree.
-
-Other harnesses push the same way; the server recognises the format:
-
-```console
-$ a4sx push ~/.codex/sessions/2026/10/14/rollout-….jsonl --label codex-run     # Codex CLI
-$ a4sx push ~/.grok/sessions/<project>/<session-id>/ --label grok-run           # Grok Build: the folder
-```
-
-For a Grok Build session folder only its `updates.jsonl` is uploaded. Pushing one of the folder's other
-files (`chat_history.jsonl`, `system_prompt.txt`, ...) is refused.
+To save sessions to your library, use the official a4sx CLI (`a4sx push` there), not this package:
+its scrub is well behind the CLI's.
 
 ## Commands
 
@@ -127,7 +124,7 @@ files (`chat_history.jsonl`, `system_prompt.txt`, ...) is refused.
   changed lines, the rules that fired (never the values), and the sha256 of your file and of the
   upload. The server scrubs again before storing. Both are pattern-based backstops, **not a
   guarantee**: review what you push (`--dry-run` shows every change, with line and column).
-- The client scrub applies the a4sx CLI's rules, which are the server's: API keys and tokens
+- The client scrub applies the a4sx CLI 0.10.61's rules: API keys and tokens
   (Anthropic, OpenAI, xAI, Groq, Google, GitHub, Slack, AWS, Stripe, z.ai, a4sx tokens, JWTs), bearer,
   basic and digest auth, AWS request signatures, credentials in URLs, private keys, secret-named
   assignments, command-line passwords (`mysql -p`, `curl -u`, `--password`, ...), Google Sheet ids,
@@ -189,11 +186,20 @@ Then run `claude --resume <id>`.
 - Claude Code stores sessions in an undocumented format that can change between releases. `a4sx`
   only rewrites `sessionId` (and, for `craft`, the `uuid`/`parentUuid` chain), so it is robust to
   most changes, but a resume can still fail after a large format change. Please open an issue.
-- The standalone `a4sx` script from the website's installer and this package share the config dir,
-  so a sign-in from one works in the other. This package does not include older command aliases,
-  the launch profiles or the workspace-admin commands; keep using the installer's script if you rely on those.
-- The client scrub is the installer's script's own, vendored with `tools/vendor_scrub.py`: a new scrub
-  rule reaches this package with its next release.
+- Sign-ins: `a4sx login` here stores its token in `credentials.json` in this package's config dir. The
+  installer's CLI keeps its own in `~/.config/a4sx/session` (on Windows `%USERPROFILE%\.config\a4sx\session`)
+  and never reads `credentials.json`, so it doesn't see a sign-in made here. On Linux and macOS, unless
+  `$A4SX_CONFIG_DIR` or a `$XDG_CONFIG_HOME` other than `~/.config` is set, both use `~/.config/a4sx`, and
+  this package falls back to the CLI's sign-in for the server the CLI signed in to; `a4sx logout` here
+  then removes that sign-in file too. On Windows this package uses `%LOCALAPPDATA%\a4sx` (else
+  `%APPDATA%\a4sx`), so neither sees the other's sign-in.
+- Both install a command named `a4sx`; on Linux and macOS both usually put it in `~/.local/bin`, so one
+  replaces or shadows the other. Don't install both on one machine, or keep them apart with the
+  installer's `A4SX_BIN_DIR` or pipx's `PIPX_BIN_DIR`.
+- This package does not include older command aliases, the launch profiles or the workspace-admin
+  commands; keep using the installer's script if you rely on those.
+- The client scrub is a copy of the installer's CLI 0.10.61 scrub, made with `tools/vendor_scrub.py`, and
+  is well behind the current CLI's. A newer copy reaches this package only with a release.
 
 ## Development
 
