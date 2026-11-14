@@ -62,18 +62,13 @@ signing in to https://session-exchange.com
 signed in. your private library on https://session-exchange.com is ready.
 ```
 
-Save the Claude Code session you worked in most recently:
+Search published sessions (no sign-in needed), and add one you are entitled to (free, bought or
+granted) to your library. `acquire` never buys anything: buy a paid listing in the web app first.
 
 ```console
-$ a4sx push --latest --label my-work
-a4sx push: client scrub: 2 lines changed (github_token: 1, homedir: 3) — lines 4, 212
-a4sx push: local sha256    5d1c…
-a4sx push: uploaded sha256 9a07…: DIFFERS from the local file (the client scrub rewrote it). …
-{ "collection": "my-work-…", "status": "staged (private)", … }
+$ a4sx search flaky test
+$ a4sx acquire <id>
 ```
-
-Not sure what would leave your machine? `a4sx push --latest --dry-run` shows which lines the scrub
-would change, uploads nothing and needs no sign-in.
 
 On any machine, in the folder you want to work in:
 
@@ -88,17 +83,8 @@ a4sx: new local session 0b6f… seeded from my-work-… (in /home/me/app)
 `resume` starts `claude --resume <new-id>`. Use `--no-launch` to only write the session, and
 pass arguments to `claude` after `--`, e.g. `a4sx resume my-work -- --model opus`.
 
-When you are done, `a4sx push --latest` saves your continuation; it is linked to `my-work` in the tree.
-
-Other harnesses push the same way; the server recognises the format:
-
-```console
-$ a4sx push ~/.codex/sessions/2026/10/14/rollout-….jsonl --label codex-run     # Codex CLI
-$ a4sx push ~/.grok/sessions/<project>/<session-id>/ --label grok-run           # Grok Build: the folder
-```
-
-For a Grok Build session folder only its `updates.jsonl` is uploaded. Pushing one of the folder's other
-files (`chat_history.jsonl`, `system_prompt.txt`, ...) is refused.
+To save sessions to your library, use the official a4sx CLI (`a4sx push` there), not this package:
+its scrub is well behind the CLI's.
 
 ## Commands
 
