@@ -3,6 +3,9 @@
 > session-exchange.com: [install.sh](https://session-exchange.com/install.sh) (Linux, macOS, WSL) or
 > [install.ps1](https://session-exchange.com/install.ps1) (Windows). Both commands are called `a4sx` and
 > share the sign-in; see [Compatibility](#compatibility).
+>
+> To upload sessions, use the official CLI: this package's scrub is vendored from the CLI 0.10.61 and
+> lacks a rule the CLI has added since, for a4sx's own codes and refresh tokens.
 
 <!--
 SPDX-FileCopyrightText: 2026 crossVault GmbH

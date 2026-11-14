@@ -6,7 +6,7 @@ All notable changes to this project are documented here. The format follows
 
 ## [Unreleased]
 
-## [0.11.0] - unreleased
+## [0.11.0] - 2026-10-16
 
 First release as a Python package. Before this, `a4sx` was a single script distributed by the
 website's installer (versions up to 0.10.x); this package continues its version line.
