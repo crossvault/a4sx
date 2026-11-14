@@ -1,4 +1,8 @@
-> **Pre-release:** not yet published to PyPI. Do not use it to upload sessions yet; use the official a4sx CLI from session-exchange.com.
+> **This is the Python SDK and a small CLI**, published on PyPI as [`a4sx`](https://pypi.org/project/a4sx/)
+> (beta). The a4sx CLI most people use, with meshes, cells and `launch`, is the official one from
+> session-exchange.com: [install.sh](https://session-exchange.com/install.sh) (Linux, macOS, WSL) or
+> [install.ps1](https://session-exchange.com/install.ps1) (Windows). Both commands are called `a4sx` and
+> share the sign-in; see [Compatibility](#compatibility).
 
 <!--
 SPDX-FileCopyrightText: 2026 crossVault GmbH
