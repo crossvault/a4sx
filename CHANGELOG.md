@@ -50,7 +50,7 @@ website's installer (versions up to 0.10.x); this package continues its version 
 - The server address is a URL (`--base`, `A4SX_BASE`); `http://` is accepted for loopback hosts only.
 - The session token is written atomically with mode 0600 from the start, and is attached so that it
   is never forwarded on a redirect.
-- Config dir: `A4SX_CONFIG_DIR`, `%APPDATA%\a4sx` on Windows, `$XDG_CONFIG_HOME/a4sx` honoured.
+- Config dir: `A4SX_CONFIG_DIR`, `%LOCALAPPDATA%\a4sx` (else `%APPDATA%\a4sx`) on Windows, `$XDG_CONFIG_HOME/a4sx` honoured.
 
 ### Security
 
